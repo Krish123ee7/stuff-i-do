@@ -1,460 +1,575 @@
+
 class Chess():
     def __init__(self):
         self.chess_board = [["r","n","b","q","k","b","n","r"],
-                       ["p","p","p","p","p","p","p","p"],
-                       ["","","","","","","",""],
-                       ["","","","","","","",""],
-                       ["","","","","","","",""],
-                       ["","","","","","","",""],
-                       ["p'","p'","p'","p'","p'","p'","p'","p'"],
-                       ["r'","n'","b'","q'","k'","b'","n'","r'"],]
+                            ["p","p","p","p","p","p","p","p"],
+                            ["","","","","","","",""],
+                            ["","","","","","","",""],
+                            ["","","","","","","",""],
+                            ["","","","","","","",""],
+                            ["p'","p'","p'","p'","p'","p'","p'","p'"],
+                            ["r'","n'","b'","q'","k'","b'","n'","r'"]]
         self.white_win = False
         self.black_win = False
-        self.turn = "White"
-        self.x = None
-        self.y = None
+        self.turn = "white"
+        self.x1 = None
+        self.y1 = None
+        self.x2 = None
+        self.y2 = None
 
-        self.white_king = King(0,4,'white')
-        self.black_king = King(7,4,'black')
-        self.white_queen = Queen(0,3,'white')
-        self.black_queen = Queen(7,3,'black')
-        self.white_knight1 = Knight(0,1,'white')
-        self.white_knight2 = Knight(0,6,'white')
-        self.black_knight1 = Knight(7,1,'black')
-        self.black_knight2 = Knight(7,6,'black')
-        self.white_ws_bishop = Bishop(0,5,'white')
-        self.white_bs_bishop = Bishop(0,2,'white')
-        self.black_ws_bishop = Bishop(7,5,'black')
-        self.black_bs_bishop = Bishop(7,2,'black')
-        self.white_rookh1 = Rookh(0,0,'white')
-        self.white_rookh2 = Rookh(0,7,'white')
-        self.black_rookh1 = Rookh(7,0,'black')
-        self.black_rookh2 = Rookh(7,7,'black')
-        self.a2 = White_pawn(1,0,'white')
-        self.b2 = White_pawn(1,1,'white')
-        self.c2 = White_pawn(1,2,'white')
-        self.d2 = White_pawn(1,3,'white')
-        self.e2 = White_pawn(1,4,'white')
-        self.f2 = White_pawn(1,5,'white')
-        self.g2 = White_pawn(1,6,'white')
-        self.h2 = White_pawn(1,7,'white')
-        self.a7 = Black_pawn(6,0,'black')
-        self.b7 = Black_pawn(6,1,'black')
-        self.c7 = Black_pawn(6,2,'black')
-        self.d7 = Black_pawn(6,3,'black')
-        self.e7 = Black_pawn(6,4,'black')
-        self.f7 = Black_pawn(6,5,'black')
-        self.g7 = Black_pawn(6,6,'black')
-        self.h7 = Black_pawn(6,7,'black')
 
-        self.pieces = [self.white_king,self.black_king,self.white_queen,self.black_queen,self.white_knight1,self.white_knight2,self.black_knight1,self.black_knight2,self.white_ws_bishop,self.white_bs_bishop,self.black_ws_bishop,self.black_bs_bishop,self.white_rookh1,self.white_rookh2,self.black_rookh1,self.black_rookh2,self.a2,self.b2,self.c2,self.d2,self.e2,self.f2,self.g2,self.h2,self.a7,self.b7,self.c7,self.d7,self.e7,self.f7,self.g7,self.h7]
-        
-        #self.position = {self.white_king : self.white_king.possition(),
-        #              self.black_king : [7,4],
-        #              self.white_queen : [0,3],
-        #              self.black_queen : [7,3],
-        #              self.white_knight1 : [0,1],
-        #              self.white_knight2 : [0,6],
-        #              self.black_knight1 : [7,1],
-        #              self.black_knight2 : [7,6],
-        #              self.white_ws_bishop : [0,5],
-        #              self.white_bs_bishop : [0,2],
-        #              self.black_ws_bishop : [7,5],
-        #              self.black_bs_bishop : [7,2],
-        #              self.white_rookh1 : [0,0],
-        #              self.white_rookh2 : [0,7],
-        #              self.black_rookh1 : [7,0],
-        #              self.black_rookh2 : [7,7],
-        #              self.a2 : [1,0],
-        #              self.b2 : [1,1],
-        #              self.c2 : [1,2],
-        #              self.d2 : [1,3],
-        #              self.e2 : [1,4],
-        #              self.f2 : [1,5],
-        #              self.g2 : [1,6],
-        #              self.h2 : [1,7],
-        #              self.a7 : [6,0],
-        #              self.b7 : [6,1],
-        #              self.c7 : [6,2],
-        #              self.d7 : [6,3],
-        #              self.e7 : [6,4],
-        #              self.f7 : [6,5],
-        #              self.g7 : [6,6],
-        #              self.h7 : [6,7],}
+        self.pieces =[
+            King(0,4,'white'),
+            King(7,4,'black'),
+            Queen(0,3,'white'),
+            Queen(7,3,'black'),
+            Knight(0,1,'white'),
+            Knight(0,6,'white'),
+            Knight(7,1,'black'),
+            Knight(7,6,'black'),
+            Bishop(0,5,'white'),
+            Bishop(0,2,'white'),
+            Bishop(7,5,'black'),
+            Bishop(7,2,'black'),
+            Rookh(0,0,'white'),
+            Rookh(0,7,'white'),
+            Rookh(7,0,'black'),
+            Rookh(7,7,'black'),
+            Pawn(1,0,'white'),
+            Pawn(1,1,'white'),
+            Pawn(1,2,'white'),
+            Pawn(1,3,'white'),
+            Pawn(1,4,'white'),
+            Pawn(1,5,'white'),
+            Pawn(1,6,'white'),
+            Pawn(1,7,'white'),
+            Pawn(6,0,'black'),
+            Pawn(6,1,'black'),
+            Pawn(6,2,'black'),
+            Pawn(6,3,'black'),
+            Pawn(6,4,'black'),
+            Pawn(6,5,'black'),
+            Pawn(6,6,'black'),
+            Pawn(6,7,'black')]
 
         self.selected_piece = None
-
+    #basic thing
     def print_board(self):
-        alph = ['a','b','c','d','e','f','g','h']
-        for i in range(1,9):
-            print(9-i,end="-")
-            for piece in self.chess_board[-i] :
-                if piece in ["r'","n'","b'","q'","k'","p'"]:
-                    print("|",piece,"|",end='')
-                elif piece in ["r","n","b","q","k","p"]:
-                    print("|",piece," |",end='')
+        alph=['a','b','c','d','e','f','g','h']
+        for i in range(8):
+            print(8-i,"-",end="")
+            for j in range(8):
+                if "'" in self.chess_board[-i-1][j]:
+                    print(f"| {self.chess_board[-i-1][j]}",end="")
+                elif self.chess_board[-i-1][j] == "":
+                    print("|   ",end='')
                 else:
-                    print("|    |",end="")
-                
-            print()
-        print("    ",end="")
-        for i in range(0,8):
-            print(alph[i],end="     ")
-        print()
+                    print(f"| {self.chess_board[-i-1][j] }",end=" ")
+            print("|")
+        print("     |   |   |   |   |   |   |   |")
+        print("     a   b   c   d   e   f   g   h")
 
     def toogle_turn(self):
-        if self.turn == "White":
-            self.turn = "Black"
-        else:
-            self.turn = "White"
+        if self.turn == 'white':
+            self.turn = "black"
+        elif self.turn  == "black":
+            self.turn = 'white'
 
-    def input_gui(self,x=None,y=None):
+    def txt_to_pos(self,txt):
+        alph=['a','b','c','d','e','f','g','h']
+        x=int(txt[1]) -1
+        y= None
+        for i in range(8):
+            if txt[0]== alph[i]:
+                y = i
+
         return x,y
-        
-
-    def _input_(self,text = "enter sellection possition: "):
-        #try:
-        
-        #if self.input_gui() is None:
-        _input_ = input(text)
-        alph = ['a','b','c','d','e','f','g','h']
-        for i in range(0,8):
-            if _input_[0] == alph[i]:
-                self.y=i
-            if int(_input_[1]) == i+1:
-                self.x=i
-                print(self.x,self.y)
-        #elif self.input_gui() is not None:
-        #    self.x,self.y = self.input_gui()
-        #except:
-        return [self.x,self.y]
-
-    def check_pos(self):
-        for i in self.pieces:
-            if i.position()== [self.x,self.y]:
-                return i
-                
             
-    def start(self):
-        while (self.white_win == False) and (self.black_win == False):
+    def input_data(self,txt):
+        x,y = self.txt_to_pos(input(txt))
+        try:
+            if (x and y) not in list(range(8)):
+                print("invalid input")
+                self.input_data()
+        except:
+            print("invalid input")
+            self.input_data()
+        else:
+            return x,y
+
+    
+        
+            
+#----------------------------------------MAIN----------------------------------------#
+    def start_game(self):
+        print()
+
+        checks =[]
+        while (self.white_win and self.black_win) == False:
+            print("no of checks",len(checks))
+
+            # update chess_board for the pieces 
+
+            for piece in self.pieces:
+                piece.update_chess_board(self.chess_board)
+
+
+            loopbraker = False
+            loopcontinuer = False
+            caputre_move = False
+            
             print(f"{self.turn}'s turn")
             self.print_board()
-            self.first_input = self._input_()
-            if self.chess_board[self.x][self.y] == "":
-                print("no piece is selected")
-                self.x,self.y == None,None
+            self.x1,self.y1 = self.input_data("enter the position of the piece that you want to select: ")
+            if (self.turn == "white" and self.chess_board[self.x1][self.y1] not in ["r","n","b","q","k","p"]) or (self.turn == "black" and self.chess_board[self.x1][self.y1] not in ["r'","n'","b'","q'","k'","p'"]):
+                print("please select your own piece, Try again!")
                 continue
-            if (self.turn == "White" and self.chess_board[self.x][self.y] in ["r'","n'","b'","q'","k'","p'"]) or (self.turn == "Black" and self.chess_board[self.x][self.y] in ["r","n","b","q","k","p"]):
-                print("please select your own piece")
-                self.x,self.y == None,None
+            # ERROR : selected blank space
+            if self.chess_board[self.x1][self.y1] == '':
+                print("No piece at the position, Try again!")
                 continue
-            self.selected_piece = self.check_pos()
-            self.second_input = self._input_("enter secondary sellection possition: ")
-            if (self.turn == "White" and self.chess_board[self.x][self.y] in ["r","n","b","q","k","p"]) or (self.turn == "Black" and self.chess_board[self.x][self.y] in ["r'","n'","b'","q'","k'","p'"]):
-                print("you can not capture your own piece")
-                self.x,self.y == None,None
-                continue
-            if self.first_input == self.second_input:
-                print("invalid move")
-                print(self.first_input,self.second_input)
-                self.x,self.y == None,None
-                continue
-            # for normal move
-            if self.chess_board[self.first_input[0]][self.first_input[1]] in ["k","k'","n","n'"] and ((self.chess_board[self.second_input[0]][self.second_input[1]] == "") or (self.turn == "White" and self.chess_board[self.x][self.y] in ["r'","n'","b'","q'","k'","p'"]) or (self.turn == "Black" and self.chess_board[self.x][self.y] in ["r","n","b","q","k","p"])) and (self.selected_piece.check_move(self.second_input) and self.first_input != self.second_input):
-                print(self.chess_board[self.second_input[0]][self.second_input[1]],self.chess_board[self.first_input[0]][self.first_input[1]])
-                self.chess_board[self.x][self.y],self.chess_board[self.first_input[0]][self.first_input[1]] = self.chess_board[self.first_input[0]][self.first_input[1]],""
-                self.toogle_turn()
-                self.x,self.y == None,None
-                # for check 
-                continue
-            elif self.chess_board[self.first_input[0]][self.first_input[1]] in ["r","r'","b","b'"] and ((self.chess_board[self.second_input[0]][self.second_input[1]] == "") or (self.turn == "White" and self.chess_board[self.x][self.y] in ["r'","n'","b'","q'","k'","p'"]) or (self.turn == "Black" and self.chess_board[self.x][self.y] in ["r","n","b","q","k","p"])) and (self.selected_piece.check_move(self.second_input,self.chess_board,self.turn) and self.first_input != self.second_input):
-                print(self.chess_board[self.second_input[0]][self.second_input[1]],self.chess_board[self.first_input[0]][self.first_input[1]])
-                self.chess_board[self.x][self.y],self.chess_board[self.first_input[0]][self.first_input[1]] = self.chess_board[self.first_input[0]][self.first_input[1]],""
-                self.toogle_turn()
-                self.x,self.y == None,None
-                # for check 
-                continue
-            elif self.chess_board[self.first_input[0]][self.first_input[1]] in ["p","p'"] and ((self.chess_board[self.second_input[0]][self.second_input[1]] == "") and self.selected_piece.check_move(self.second_input)):
-                print(self.chess_board[self.second_input[0]][self.second_input[1]],self.chess_board[self.first_input[0]][self.first_input[1]])
-                self.chess_board[self.x][self.y],self.chess_board[self.first_input[0]][self.first_input[1]] = self.chess_board[self.first_input[0]][self.first_input[1]],""
-                self.toogle_turn()
-                self.x,self.y == None,None
-                # for check 
-                continue
-            elif ((self.turn == "White" and self.chess_board[self.x][self.y] in ["r'","n'","b'","q'","k'","p'"]) or (self.turn == "Black" and self.chess_board[self.x][self.y] in ["r","n","b","q","k","p"])) and (self.chess_board[self.first_input[0]][self.first_input[1]] in ["p","p'"] and self.selected_piece.check_capture(self.second_input)):
-                print(self.chess_board[self.second_input[0]][self.second_input[1]],self.chess_board[self.first_input[0]][self.first_input[1]])
-                self.chess_board[self.x][self.y],self.chess_board[self.first_input[0]][self.first_input[1]] = self.chess_board[self.first_input[0]][self.first_input[1]],""
-                self.toogle_turn()
-                self.x,self.y == None,None
-                # for check 
-                continue
-            else:
-                print("invalid move")
-                print("here")
-                self.x,self.y == None,None
+
+            self.x2,self.y2 = self.input_data("enter the position where you want to move/caputre: ")
             
+            # Error : cannot capture your piece
+            if (self.turn == "white" and self.chess_board[self.x2][self.y2] in ["r","n","b","q","k","p"]) or (self.turn == "black" and self.chess_board[self.x2][self.y2] in ["r'","n'","b'","q'","k'","b'","n'","r'"]):
+                print("Invalid move: Can not capture your own piece, Try again!")
+                continue
+            
+            
+            #capture
+            if ((self.turn == "white" and self.chess_board[self.x2][self.y2] in ["q'","b'","n'","r'","p'"]) or (self.turn == "black" and self.chess_board[self.x2][self.y2] in ["q","b","n","r","p"])):
+                caputre_move = True
+                print("capture")
+
+            #normal move
+            else:
+                print("normal move")
+
+            if len(checks) == 0:
+                index = -1
                 
+                for piece in self.pieces:
+                    index +=1
+                    if [piece.x,piece.y] == [self.x1,self.y1]:
+                        print(index)
+                        print([self.x2,self.y2])
+                        if caputre_move and type(self.pieces[index]) == Pawn:
+                            if [self.x2,self.y2] in self.pieces[index].capture():
+                                print(self.pieces[index].valid_moves)
+                                print("capture move")
+                                templist = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
+                                self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
+                                self.pieces[index].move(self.x2,self.y2)
+                                if (self.turn == "white" and len(self.pieces[0].if_under_check())>0) or (self.turn == "black" and len(self.pieces[1].if_under_check())>0):
+                                    print("invalid move! moving this piece will put your king under check")
+                                    self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
+                                    self.pieces[index].move(self.x1,self.y1)
+                                    loopcontinuer = True
+                                    break
+                                self.toogle_turn()
+                                #loopbraker = True
+                        elif [self.x2,self.y2] in self.pieces[index].check_moves():
+                            print(self.pieces[index].valid_moves)
+                            print("valid move")
+                            templist = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
+                            self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
+                            self.pieces[index].move(self.x2,self.y2)
+                            if (self.turn == "white" and len(self.pieces[0].if_under_check())>0) or (self.turn == "black" and len(self.pieces[1].if_under_check())>0):
+                                    print("invalid move! moving this piece will put your king under check")
+                                    self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
+                                    self.pieces[index].move(self.x1,self.y1)
+                                    checks =[]
+                                    break
+                            self.toogle_turn()
+                            #loopbraker = True
+                        break
 
+            if loopcontinuer:
+                continue
+            if loopbraker:
+                break
 
-class White_pawn():
-    def __init__(self,x,y,color):
-        self.x1 = x
-        self.y1 = y
-        self.color = color
-        self.first_move = True
+            if self.turn == "white":
+                checks.extend(self.pieces[0].if_under_check())
+            elif self.turn == "black":
+                checks.extend(self.pieces[1].if_under_check())
+            #check moves
+            if len(checks) > 0:
+                print("CHECK!!")
 
-    def position(self):
-        return [self.x1,self.y1]
+            
+            if loopcontinuer:
+                continue
+            if loopbraker:
+                break
 
-    def check_move(self,value):
-        if (self.first_move == True and value == [3,self.y1]) or (value == [self.x1 + 1,self.y1]):
-            self.first_move = False
-            self.x1,self.y1 = value
-            return True
+                  
 
-    def check_capture(self,value):
-        if (value == [self.x1 + 1,self.y1 +1]) or (value == [self.x1 + 1,self.y1 -1]):
-            self.first_move = False
-            self.x1,self.y1 = value
-            return True
-
-
-class Black_pawn():
-    def __init__(self,x,y,color):
-        self.x1 = x
-        self.y1 = y
-        self.color = color
-        self.first_move = True
-
-    def position(self):
-        return [self.x1,self.y1]
-
-    def check_move(self,value):
-        if (self.first_move == True and value == [4,self.y1]) or (value == [self.x1 - 1,self.y1]):
-            self.first_move = False
-            self.x1,self.y1 = value
-            return True
-
-    def check_capture(self,value):
-        if (value == [self.x1 - 1,self.y1 +1]) or (value == [self.x1 - 1,self.y1 -1]):
-            self.first_move = False
-            self.x1,self.y1 = value
-            return True
-
+#----------------------------------------PIECES----------------------------------------#
 class King():
     def __init__(self,x,y,color):
-        self.x1 = x
-        self.y1 = y
+        self.x = x
+        self.y = y
         self.color = color
-        self.first_move = True
+        self.valid_moves = []
+        self.chess_board = []
+        self.under_check = False
 
-    def position(self):
-        return [self.x1,self.y1]
-
-    def posible_moves(self):
-        moves = []
+    def check_moves(self):
         for i in range(-1,2):
             for j in range(-1,2):
-                if [i,j] not in [0,0]:
-                    moves.append([self.x1 +i,self.y1 +j])
-        return moves
-    def check_move(self,value):
-        if value in self.posible_moves():
-            self.first_move = False
-            self.x1,self.y1 = value
-            return True
+                if self.x + i in list(range(8)) and self.y + j in list(range(8)):
+                    self.valid_moves.append([self.x+i,self.y+j])
+        return self.valid_moves
+
+    def reset_valid_moves(self):
+        self.valid_moves = []
+
+    def move(self,x,y):
+        self.x,self.y = x,y
+        self.reset_valid_moves()
+
+    def update_chess_board(self,chess_board):
+        self.chess_board = chess_board  
+
+    def if_under_check(self):
         
+        rookh_part = Rookh(self.x,self.y,self.color)
+        bishop_part = Bishop(self.x,self.y,self.color)
+        knight_part = Knight(self.x,self.y,self.color)
+        pawn_part = Pawn(self.x,self.y,self.color)
 
-class Knight():
-    def __init__(self,x,y,color):
-        self.x1 = x
-        self.y1 = y
-        self.color = color
+        rookh_part.update_chess_board(self.chess_board)
+        bishop_part.update_chess_board(self.chess_board)
+        knight_part.update_chess_board(self.chess_board)
+        pawn_part.update_chess_board(self.chess_board)
 
-    def position(self):
-        return [self.x1,self.y1]
+        check_by_rookh = False
+        check_by_bishop = False
+        check_by_knight = False
+        check_by_pawn = False
+        check_by_queen = False
 
-    def posible_moves(self):
-        moves = [[self.x1+2,self.y1+1],[self.x1+2,self.y1-1],[self.x1-2,self.y1+1],[self.x1-2,self.y1-1],[self.x1+1,self.y1+2],[self.x1+1,self.y1-2],[self.x1-1,self.y1+2],[self.x1-1,self.y1-2]]
-        return moves
-    def check_move(self,value):
-        if value in self.posible_moves():
-            self.x1,self.y1=value
-            return True
+        print(self.color)
+        rookh_moves = rookh_part.check_moves()
+        print("rook",rookh_moves)
+        bishop_moves = bishop_part.check_moves()
+        print("bishop",bishop_moves)
+        knight_moves = knight_part.check_moves()
+        print("knight",knight_moves)
+        pawn_moves = pawn_part.capture()
+        print("pawn",pawn_moves)
+        queen_moves = rookh_moves + bishop_moves
+        print("queen",queen_moves)
 
-class Rookh():
-    def __init__(self,x,y,color):
-        self.x1 = x
-        self.y1 = y
-        self.color = color
-        self.first_move = True
-
-    def position(self):
-        return [self.x1,self.y1]
-
-    def posible_moves(self,chess_board,turn):
-        moves = []
-        #for white turn
-        for i in range(1,8):
-            if self.x1+i<8 and  (turn == "White") and (chess_board[self.x1 + i][self.y1] in [""]):
-                moves.append([self.x1+i,self.y1])
-            elif self.x1+i<8 and  (turn == "White") and (chess_board[self.x1 + i][self.y1] in ["r'","n'","b'","q'","k'","p'"]):
-                moves.append([self.x1+i,self.y1+i])
-                break
-        for i in range(1,8):
-            if self.y1 + i <8 and (turn == "White") and (chess_board[self.x1][self.y1 + i] in [""]):
-                moves.append([self.x1,self.y1 + i])
-            elif self.y1 + i <8 and (turn == "White") and (chess_board[self.x1][self.y1 + i] in ["r'","n'","b'","q'","k'","p'"]):
-                moves.append([self.x1,self.y1 + i])
-                break
-        for i in range(1,8):
-            if self.x1 - i >=0 and (turn == "White") and (chess_board[self.x1 - i][self.y1] in [""]):
-                moves.append([self.x1-i,self.y1])
-            if self.x1 - i >=0 and (turn == "White") and (chess_board[self.x1 - i][self.y1] in ["r'","n'","b'","q'","k'","p'"]):
-                moves.append([self.x1-i,self.y1])
-                break
-        for i in range(1,8):
-            if self.y1 - i >=0 and (turn == "White") and (chess_board[self.x1][self.y1 - i] in [""]):
-                moves.append([self.x1,self.y1 - i])
-            if self.y1 - i >=0 and (turn == "White") and (chess_board[self.x1][self.y1 - i] in ["r'","n'","b'","q'","k'","p'"]):
-                moves.append([self.x1,self.y1 - i])
-                break
-        #for black turn
-        for i in range(1,8):
-            if self.x1+i<8 and  (turn == "Black") and (chess_board[self.x1 + i][self.y1] in [""]):
-                moves.append([self.x1+i,self.y1])
-            elif self.x1+i<8 and  (turn == "Black") and (chess_board[self.x1 + i][self.y1] in ["r","n","b","q","k","p"]):
-                moves.append([self.x1+i,self.y1+i])
-                break
-        for i in range(1,8):
-            if self.y1 + i <8 and (turn == "Black") and (chess_board[self.x1][self.y1 + i] in [""]):
-                moves.append([self.x1,self.y1 + i])
-            elif self.y1 + i <8 and (turn == "Black") and (chess_board[self.x1][self.y1 + i] in ["r","n","b","q","k","p"]):
-                moves.append([self.x1,self.y1 + i])
-                break
-        for i in range(1,8):
-            if self.x1 - i >=0 and (turn == "Black") and (chess_board[self.x1 - i][self.y1] in [""]):
-                moves.append([self.x1-i,self.y1])
-            if self.x1 - i >=0 and (turn == "Black") and (chess_board[self.x1 - i][self.y1] in ["r","n","b","q","k","p"]):
-                moves.append([self.x1-i,self.y1])
-                break
-        for i in range(1,8):
-            if self.y1 - i >=0 and (turn == "Black") and (chess_board[self.x1][self.y1 - i] in [""]):
-                moves.append([self.x1,self.y1 - i])
-            if self.y1 - i >=0 and (turn == "Black") and (chess_board[self.x1][self.y1 - i] in ["r","n","b","q","k","p"]):
-                moves.append([self.x1,self.y1 - i])
-                break
-        return moves
-
-    def check_move(self,value,chess_board,turn):
-        if value in self.posible_moves(chess_board,turn):
-            self.first_move = False
-            self.x1,self.y1 = value
-            return True
-
-class Bishop():
-    def __init__(self,x,y,color):
-        self.x1 = x
-        self.y1 = y
-        self.color = color
-
-    def position(self):
-        return [self.x1,self.y1]
-
-    def posible_moves(self,chess_board,turn):
-        moves = []
-    #for white
-        #up-right
-        for  i in range(1,8):
-            if self.x1 + i <8 and self.y1 + i <8 and turn == "White" and chess_board[self.x1+i][self.y1+i] in [""]:
-                moves.append([self.x1+i,self.y1+i])
-            elif self.x1 + i <8 and self.y1 <8 and turn == "White" and chess_board[self.x1+i][self.y1+i] in ["r'","n'","b'","q'","k'","p'"]:
-                moves.append([self.x1+i,self.y1+i])
-                break
-        #up-left
-        for  i in range(1,8):
-            if self.x1 + i <8 and self.y1 - i >= 0 and turn == "White" and chess_board[self.x1+i][self.y1-i] in [""]:
-                moves.append([self.x1+i,self.y1-i])
-            elif self.x1 + i <8 and self.y1 - i >= 0 and turn == "White" and chess_board[self.x1+i][self.y1-i] in ["r'","n'","b'","q'","k'","p'"]:
-                moves.append([self.x1+i,self.y1-i])
-                break
-        #down-right
-        for  i in range(1,8):
-            if self.x1 - i >= 0 and self.y1 + i <8 and turn == "White" and chess_board[self.x1-i][self.y1+i] in [""]:
-                moves.append([self.x1-i,self.y1+i])
-            elif self.x1 - i >= 0 and self.y1 <8 and turn == "White" and chess_board[self.x1-i][self.y1+i] in ["r'","n'","b'","q'","k'","p'"]:
-                moves.append([self.x1-i,self.y1+i])
-                break
-        #down-left
-        for  i in range(1,8):
-            if self.x1 - i >= 0 and self.y1 - i >= 0 and turn == "White" and chess_board[self.x1-i][self.y1-i] in [""]:
-                moves.append([self.x1-i,self.y1-i])
-            elif self.x1 - i >= 0 and self.y1 - i >= 0 and turn == "White" and chess_board[self.x1-i][self.y1-i] in ["r'","n'","b'","q'","k'","p'"]:
-                moves.append([self.x1-i,self.y1-i])
-                break
-    #for black
-        #up-right
-        for  i in range(1,8):
-            if self.x1 + i <8 and self.y1 + i <8 and turn == "Black" and chess_board[self.x1+i][self.y1+i] in [""]:
-                moves.append([self.x1+i,self.y1+i])
-            elif self.x1 + i <8 and self.y1 <8 and turn == "Black" and chess_board[self.x1+i][self.y1+i] in ["r","n","b","q","k","p"]:
-                moves.append([self.x1+i,self.y1+i])
-                break
-        #up-left
-        for  i in range(1,8):
-            if self.x1 + i <8 and self.y1 - i >= 0 and turn == "Black" and chess_board[self.x1+i][self.y1-i] in [""]:
-                moves.append([self.x1+i,self.y1-i])
-            elif self.x1 + i <8 and self.y1 - i >= 0 and turn == "Black" and chess_board[self.x1+i][self.y1-i] in ["r","n","b","q","k","p"]:
-                moves.append([self.x1+i,self.y1-i])
-                break
-        #down-right
-        for  i in range(1,8):
-            if self.x1 - i >= 0 and self.y1 + i <8 and turn == "Black" and chess_board[self.x1-i][self.y1+i] in [""]:
-                moves.append([self.x1-i,self.y1+i])
-            elif self.x1 - i >= 0 and self.y1 <8 and turn == "Black" and chess_board[self.x1-i][self.y1+i] in ["r","n","b","q","k","p"]:
-                moves.append([self.x1-i,self.y1+i])
-                break
-        #down-left
-        for  i in range(1,8):
-            if self.x1 - i >= 0 and self.y1 - i >= 0 and turn == "Black" and chess_board[self.x1-i][self.y1-i] in [""]:
-                moves.append([self.x1-i,self.y1-i])
-            elif self.x1 - i >= 0 and self.y1 - i >= 0 and turn == "Black" and chess_board[self.x1-i][self.y1-i] in ["r","n","b","q","k","p"]:
-                moves.append([self.x1-i,self.y1-i])
-                break
-        return moves
-
-    def check_move(self,value,chess_board,turn):
-        if value in self.posible_moves(chess_board,turn):
-            self.x1,self.y1 = value
-            return True
+        if self.color == "white":
+            for a,b in knight_moves:
+                try:
+                    if self.chess_board[a][b] == "n'":
+                        check_by_knight = True
+                except:
+                    pass 
+            for a,b in pawn_moves:
+                if self.chess_board[a][b] == "p'":
+                    check_by_pawn = True
+            for a,b in queen_moves:
+                if self.chess_board[a][b] == "q'":
+                    check_by_queen = True
+            for a,b in rookh_moves:
+                if self.chess_board[a][b] == "r'":
+                    check_by_rookh = True
+            for a,b in bishop_moves:
+                if self.chess_board[a][b] == "b'":
+                    check_by_bishop = True
+            
+        if self.color == "black":
+            for a,b in knight_moves:
+                try:
+                    if self.chess_board[a][b] == "n":
+                        check_by_knight = True
+                except:
+                    pass
+            for a,b in pawn_moves:
+                if self.chess_board[a][b] == "p":
+                    check_by_pawn = True
+            for a,b in queen_moves:
+                if self.chess_board[a][b] == "q":
+                    check_by_queen = True
+            for a,b in rookh_moves:
+                if self.chess_board[a][b] == "r":
+                    check_by_rookh = True
+            for a,b in bishop_moves:
+                if self.chess_board[a][b] == "b":
+                    check_by_bishop = True
+        return_list = []
+        if check_by_rookh:
+            return_list.append("check by rookh")
+        if check_by_bishop:
+            return_list.append("check by bishop")
+        if check_by_knight:
+            return_list.append("check by knight")
+        if check_by_pawn:
+            return_list.append("check by pawn")
+        if check_by_queen:
+            return_list.append("check by queen")
+        return return_list
 
 class Queen():
     def __init__(self,x,y,color):
-        self.x1 = x
-        self.y1 = y
+        self.x = x
+        self.y = y
         self.color = color
+        self.valid_moves = []
+        self.chess_board = []
 
-    def position(self):
-        return [self.x1,self.y1]
+    def check_moves(self):
+        rookhpart = Rookh(self.x,self.y,self.color)
+        bishoppart = Bishop(self.x,self.y,self.color)
+        self.valid_moves.extend(rookhpart.check_moves())
+        self.valid_moves.extend(bishoppart.check_moves())
+        return self.valid_moves
 
-    def posible_moves(self,chess_board,turn):
-        moves = []
-        rookh_part = Rookh(self.x1,self.y1)
-        moves.extend(rookh_part.posible_moves(chess_board,turn))
-        bishop_part = Bishop(self.x1,self.y1)
-        moves.extend(bishop_part(chess_board,turn))
-        print(moves)
-        return moves
+    def reset_valid_moves(self):
+        self.valid_moves = []
 
-    def check_move(self,value,chess_board,turn):
-        if value in self.posible_moves(chess_board,turn):
-            self.x1,self.y1 = value
-            print("here")
-            return True
-    def check_ckeck(self,chess_board,turn):
-        for pos in self.possible_moves(chess_board,turn):
-            if (turn == "White" and chess_board[pos[0]][pos[1]] == "k'") or (turn == "Black" and chess_board[pos[0]][pos[1]] == "k"):
-                print("check")
+    def move(self,x,y):
+        self.x,self.y = x,y
+        self.reset_valid_moves()
+    
+    def update_chess_board(self,chess_board):
+        self.chess_board = chess_board
+
+class Rookh():
+    def __init__(self,x,y,color):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.valid_moves = []
+        self.chess_board = []
+        self.first_move = True
+
+    def check_moves(self):
+        #up moves
+        for i in range(1,8):
+            try:
+                if self.x + i in list(range(8)) and self.chess_board[self.x+i][self.y] == '':
+                    self.valid_moves.append([self.x+i,self.y])
+                elif self.x + i in list(range(8)) and self.color == "white" and self.chess_board[self.x+i][self.y] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x+i][self.y] in ["r","n","b","q","k","p"]:
+                    self.valid_moves.append([self.x+i,self.y])
+                    break
+                else:
+                    break
+            except:
+                break
+
+        #down moves
+        for i in range(1,8):
+            try:
+                if self.x - i in list(range(8)) and self.chess_board[self.x-i][self.y] == '':
+                    self.valid_moves.append([self.x-i,self.y])
+                elif self.x - i in list(range(8)) and self.color == "white" and self.chess_board[self.x-i][self.y] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x-i][self.y] in ["r","n","b","q","k","p"]:
+                    self.valid_moves.append([self.x-i,self.y])
+                    break
+                else:
+                    break
+            except:
+                break
+
+        #right moves
+        for i in range(1,8):
+            try:
+                if self.y + i in list(range(8)) and self.chess_board[self.x][self.y+i] == '':
+                    self.valid_moves.append([self.x,self.y+i])
+                elif self.y + i in list(range(8)) and self.color == "white" and self.chess_board[self.x][self.y+i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x][self.y+i] in ["r","n","b","q","k","p"]:
+                    self.valid_moves.append([self.x,self.y+i])
+                    break
+                else:
+                    break
+            except:
+                break
+
+        #left moves
+        for i in range(1,8):
+            try:
+                if self.y - i in list(range(8)) and self.chess_board[self.x][self.y-i] == '':
+                    self.valid_moves.append([self.x,self.y-i])
+                elif self.y - i in list(range(8)) and self.color == "white" and self.chess_board[self.x][self.y-i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x][self.y-i] in ["r","n","b","q","k","p"]:
+                    self.valid_moves.append([self.x,self.y-i])
+                    break
+                else:
+                    break
+            except:
+                break
+
+        return self.valid_moves
+
+    def reset_valid_moves(self):
+        self.valid_moves = []
+
+    def move(self,x,y):
+        self.x,self.y = x,y
+        self.reset_valid_moves()
+
+    def update_chess_board(self,chess_board):
+        self.chess_board = chess_board
+
+class Knight():
+    def __init__(self,x,y,color):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.valid_moves = []
+        self.chess_board = []
+
+    def check_moves(self):
+        if self.x+2 in list(range(8)) and self.y+1 in list(range(8)):
+            self.valid_moves.append([self.x+2,self.y+1])
+        if self.x+2 in list(range(8)) and self.y-1 in list(range(8)):
+            self.valid_moves.append([self.x+2,self.y-1])
+        if self.x-2 in list(range(8)) and self.y+1 in list(range(8)):
+            self.valid_moves.append([self.x-2,self.y+1])
+        if self.x-2 in list(range(8)) and self.y-1 in list(range(8)):
+            self.valid_moves.append([self.x-2,self.y-1])
+        if self.x+1 in list(range(8)) and self.y+2 in list(range(8)):
+            self.valid_moves.append([self.x+1,self.y+2])
+        if self.x+1 in list(range(8)) and self.y-2 in list(range(8)):
+            self.valid_moves.append([self.x+1,self.y-2])
+        if self.x-1 in list(range(8)) and self.y+2 in list(range(8)):
+            self.valid_moves.append([self.x-1,self.y+2])
+        if self.x-1 in list(range(8)) and self.y-2 in list(range(8)):
+            self.valid_moves.append([self.x-1,self.y-2])
+
+        return self.valid_moves
+
+    def reset_valid_moves(self):
+        self.valid_moves = []
+
+    def move(self,x,y):
+        self.x,self.y = x,y
+        self.reset_valid_moves()
+
+    def update_chess_board(self,chess_board):
+        self.chess_board = chess_board
+
+class Bishop():
+    def __init__(self,x,y,color):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.valid_moves = []
+        self.chess_board = []
+
+    def check_moves(self):
+        # up-right moves
+        for i in range(1,8):
+            try:
+                if (self.x + i in list(range(8)) and self.y + i in list(range(8))) and (self.chess_board[self.x+i][self.y+i] == ''):
+                    self.valid_moves.append([self.x+i,self.y+i])
+                elif (self.x + i in list(range(8)) and self.y + i in list(range(8))) and self.color == "white" and self.chess_board[self.x+i][self.y+i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x+i][self.y+i] in ["r","n","b","q","k","p"]:
+                    self.valid_moves.append([self.x+i,self.y+i])
+                    break
+                else:
+                    break
+            except:
+                break
+        # up-left moves
+        for i in range(1,8):
+            try:
+                if (self.x + i in list(range(8)) and self.y - i in list(range(8))) and self.chess_board[self.x+i][self.y-i] == '':
+                    self.valid_moves.append([self.x+i,self.y-i])
+                elif (self.x + i in list(range(8)) and self.y - i in list(range(8))) and  self.color == "white" and self.chess_board[self.x+i][self.y-i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x+i][self.y-i] in ["r","n","b","q","k","p"]:
+                    self.valid_moves.append([self.x+i,self.y-i])
+                    break
+                else:
+                    break
+            except:
+                break
+        # down-right moves
+        for i in range(1,8):
+            try:
+                if (self.x - i in list(range(8)) and self.y + i in list(range(8))) and self.chess_board[self.x-i][self.y+i] == '':
+                    self.valid_moves.append([self.x-i,self.y+i])
+                elif (self.x - i in list(range(8)) and self.y + i in list(range(8))) and self.color == "white" and self.chess_board[self.x-i][self.y+i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x-i][self.y+i] in ["r","n","b","q","k","p"]:
+                    self.valid_moves.append([self.x-i,self.y+i])
+                    break
+                else:
+                    break
+            except:
+                break
+        # down-left moves
+        for i in range(1,8):
+            try:
+                if (self.x - i in list(range(8)) and self.y - i in list(range(8))) and self.chess_board[self.x-i][self.y-i] == '':
+                    self.valid_moves.append([self.x-i,self.y-i])
+                elif (self.x - i in list(range(8)) and self.y - i in list(range(8))) and self.color == "white" and self.chess_board[self.x-i][self.y-i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x-i][self.y-i] in ["r","n","b","q","k","p"]:
+                    self.valid_moves.append([self.x-i,self.y-i])
+                    break
+                else:
+                    break
+            except:
+                break
+
+        return self.valid_moves
+
+    def reset_valid_moves(self):
+        self.valid_moves = []
+
+    def move(self,x,y):
+        self.x,self.y = x,y
+        self.reset_valid_moves()
+
+    def update_chess_board(self,chess_board):
+        self.chess_board = chess_board
+
+class Pawn():
+    def __init__(self,x,y,color,first_move = True):
+        self.x = x
+        self.y = y
+        self.color = color
+        self.first_move = first_move
+        self.valid_moves = []
+        self.chess_board = []
+
+    def check_moves(self):
+        if self.color == "white" and self.chess_board[self.x+1][self.y] == '':
+            if self.first_move:
+                self.valid_moves.append([self.x+2,self.y])
+            self.valid_moves.append([self.x+1,self.y])
+
+        elif self.color == "black" and self.chess_board[self.x-1][self.y] == '':
+            if self.first_move:
+                self.valid_moves.append([self.x-2,self.y])
+            self.valid_moves.append([self.x-1,self.y])
+        
+        
+        return self.valid_moves
+    
+    def capture(self):
+        temp_list=[]
+        if self.color == "white":
+            temp_list.extend(([self.x+1,self.y+1],[self.x+1,self.y-1]))
+
+        elif self.color == "black":
+            temp_list.extend(([self.x-1,self.y+1],[self.x-1,self.y-1]))
+
+        for a,b in temp_list:
+            if a in list(range(8)) and b in list(range(8)):
+                self.valid_moves.append([a,b])
+        return self.valid_moves
+
+    def reset_valid_moves(self):
+        self.valid_moves = []
+
+    def move(self,x,y):
+        self.x,self.y = x,y
+        self.first_move = False
+        self.reset_valid_moves()
+
+    def update_chess_board(self,chess_board):
+        self.chess_board = chess_board
+
+
 
 chess = Chess()
-chess.start()
+chess.start_game()
