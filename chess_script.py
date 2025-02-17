@@ -1,3 +1,4 @@
+# continue at line 199
 
 class Chess():
     def __init__(self):
@@ -86,8 +87,8 @@ class Chess():
         return x,y
             
     def input_data(self,txt):
-        x,y = self.txt_to_pos(input(txt))
         try:
+            x,y = self.txt_to_pos(input(txt))
             if (x and y) not in list(range(8)):
                 print("invalid input")
                 self.input_data()
@@ -97,6 +98,7 @@ class Chess():
         else:
             return x,y
 
+
     
         
             
@@ -105,6 +107,7 @@ class Chess():
         print()
 
         checks =[]
+        checks_by = [] #[type,piece,direction]
         while (self.white_win and self.black_win) == False:
             print("no of checks",len(checks))
 
@@ -117,9 +120,107 @@ class Chess():
             loopbraker = False
             loopcontinuer = False
             caputre_move = False
+
+            #check moves
+            if len(checks) > 0:
+                danger_tiles=[]
+                safe_tiles=[]
+                blocking_moves = []
+                print("CHECK!!")
+                print(checks)
+
+                if self.turn == "white":
+                    for piece in self.pieces:
+                        
+                        try:
+                            for (a,b) in piece.capture():
+                                if self.chess_board[a][b] == "k" and piece.color == "black":
+                                    checks_by.append(["pawn",[piece.x,piece.y]])
+                                
+                        except:
+                            index = -1
+                            for (a,b) in piece.check_moves():
+                                index += 1
+                                if self.chess_board[a][b] == "k" and piece.color == "black":
+                                    checks_by.append([piece.type,[piece.x,piece.y],piece.directions[index]])
+                        piece.reset_valid_moves()
+
+                    for data in checks_by:
+                        if data[0] == "p":
+                            for piece in self.pieces:
+                                if [piece.x,piece.y] == data[1]:
+                                    danger_tiles.extend(piece.capture())
+                                    piece.reset_valid_moves()
+                        else:
+                            for piece in self.pieces:
+                                if [piece.x,piece.y] == data[1]:
+                                    for i in range(len(piece.check_moves())):
+                                        if piece.direction[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
+                                            danger_tiles.append(piece.valid_moves[i])
+                                    piece.reset_valid_moves()
+
+                    
+                    #moving king out of check
+                    for moves in self.pieces[0].check_moves():
+                        if moves not in danger_tiles:
+                            safe_tiles.append(moves)
+                    self.pieces[0].reset_valid_moves()
+                    # blocking the check by moving other pieces
+                    for piece in self.pieces:
+                        if piece.color == "white" and piece.type != "k":
+                            for moves in piece.check_moves():
+                                if moves in danger_tiles:
+                                    blocking_moves.append(moves)
+                        if piece.color == "white" and self.type == "p":
+                            for moves in piece.capture():
+                                if moves in danger_tiles:
+                                    blocking_moves.append(moves)
+                        piece.reset_valid_moves()
+                
+                if self.turn == "black":
+                    for piece in self.pieces:
+                        
+                        try:
+                            for (a,b) in piece.capture():
+                                if self.chess_board[a][b] == "k'" and piece.color == "white":
+                                    checks_by.append(["pawn",[piece.x,piece.y]])
+                                
+                        except:
+                            index = -1
+                            for (a,b) in piece.check_moves():
+                                index += 1
+                                if self.chess_board[a][b] == "k'" and piece.color == "white":
+                                    checks_by.append([piece.type,[piece.x,piece.y],piece.directions[index]])
+                        piece.reset_valid_moves()
+
+                    for data in checks_by:
+                        if data[0] == "p":
+                            for piece in self.pieces:
+                                if [piece.x,piece.y] == data[1]:
+                                    danger_tiles.extend(piece.capture())
+                                    piece.reset_valid_moves()
+                        else:
+                            for piece in self.pieces:
+                                if [piece.x,piece.y] == data[1]:
+                                    for i in range(len(piece.check_moves())):
+                                        if piece.direction[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
+                                            danger_tiles.append(piece.valid_moves[i])
+                                    piece.reset_valid_moves()
+
+                if len(safe_tiles+blocking_moves) == 0:
+                    print("CHECKMATE!!")
+                    if self.turn == "white":
+                        print("Black wins")
+                        self.black_win = True
+                    elif self.turn == "black":
+                        print("White wins")
+                        self.white_win = True 
+
+                
             
             print(f"{self.turn}'s turn")
             self.print_board()
+
             self.x1,self.y1 = self.input_data("enter the position of the piece that you want to select: ")
             if (self.turn == "white" and self.chess_board[self.x1][self.y1] not in ["r","n","b","q","k","p"]) or (self.turn == "black" and self.chess_board[self.x1][self.y1] not in ["r'","n'","b'","q'","k'","p'"]):
                 print("please select your own piece, Try again!")
@@ -167,6 +268,10 @@ class Chess():
                                     self.pieces[index].move(self.x1,self.y1)
                                     loopcontinuer = True
                                     break
+                                if self.turn == "white":
+                                    checks.extend(self.pieces[0].if_under_check())
+                                elif self.turn == "black":
+                                    checks.extend(self.pieces[1].if_under_check())
                                 self.toogle_turn()
                                 #loopbraker = True
                         elif [self.x2,self.y2] in self.pieces[index].check_moves():
@@ -176,27 +281,154 @@ class Chess():
                             self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
                             self.pieces[index].move(self.x2,self.y2)
                             if (self.turn == "white" and len(self.pieces[0].if_under_check())>0) or (self.turn == "black" and len(self.pieces[1].if_under_check())>0):
-                                    print("invalid move! moving this piece will put your king under check")
-                                    self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
-                                    self.pieces[index].move(self.x1,self.y1)
-                                    checks =[]
-                                    break
+                                print("invalid move! moving this piece will put your king under check")
+                                self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
+                                self.pieces[index].move(self.x1,self.y1)
+                                break
+
+                            if self.turn == "white":
+                                checks.extend(self.pieces[0].if_under_check())
+                            elif self.turn == "black":
+                                checks.extend(self.pieces[1].if_under_check())
                             self.toogle_turn()
                             #loopbraker = True
                         break
+                loopcontinuer = True
 
             if loopcontinuer:
                 continue
             if loopbraker:
                 break
 
-            if self.turn == "white":
-                checks.extend(self.pieces[0].if_under_check())
-            elif self.turn == "black":
-                checks.extend(self.pieces[1].if_under_check())
+            
             #check moves
             if len(checks) > 0:
+                danger_tiles=[]
+                safe_tiles=[]
+                blocking_moves = []
                 print("CHECK!!")
+                print(checks)
+
+                if self.turn == "white":
+                    for piece in self.pieces:
+                        
+                        try:
+                            for (a,b) in piece.capture():
+                                if self.chess_board[a][b] == "k" and piece.color == "black":
+                                    checks_by.append(["pawn",[piece.x,piece.y]])
+                                
+                        except:
+                            index = -1
+                            for (a,b) in piece.check_moves():
+                                index += 1
+                                if self.chess_board[a][b] == "k" and piece.color == "black":
+                                    checks_by.append([piece.type,[piece.x,piece.y],piece.directions[index]])
+                        piece.reset_valid_moves()
+
+                    for data in checks_by:
+                        if data[0] == "p":
+                            for piece in self.pieces:
+                                if [piece.x,piece.y] == data[1]:
+                                    danger_tiles.extend(piece.capture())
+                                    piece.reset_valid_moves()
+                        else:
+                            for piece in self.pieces:
+                                if [piece.x,piece.y] == data[1]:
+                                    for i in range(len(piece.check_moves())):
+                                        if piece.direction[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
+                                            danger_tiles.append(piece.valid_moves[i])
+                                    piece.reset_valid_moves()
+
+                    
+                    #moving king out of check
+                    for moves in self.pieces[0].check_moves():
+                        if moves not in danger_tiles:
+                            safe_tiles.append(moves)
+                    self.pieces[0].reset_valid_moves()
+                    # blocking the check by moving other pieces
+                    for piece in self.pieces:
+                        if piece.color == "white" and piece.type != "k":
+                            for moves in piece.check_moves():
+                                if moves in danger_tiles:
+                                    blocking_moves.append(moves)
+                        if piece.color == "white" and self.type == "p":
+                            for moves in piece.capture():
+                                if moves in danger_tiles:
+                                    blocking_moves.append(moves)
+                        piece.reset_valid_moves()
+                
+                if self.turn == "black":
+                    for piece in self.pieces:
+                        
+                        try:
+                            for (a,b) in piece.capture():
+                                if self.chess_board[a][b] == "k'" and piece.color == "white":
+                                    checks_by.append(["pawn",[piece.x,piece.y]])
+                                
+                        except:
+                            index = -1
+                            for (a,b) in piece.check_moves():
+                                index += 1
+                                if self.chess_board[a][b] == "k'" and piece.color == "white":
+                                    checks_by.append([piece.type,[piece.x,piece.y],piece.directions[index]])
+                        piece.reset_valid_moves()
+
+                    for data in checks_by:
+                        if data[0] == "p":
+                            for piece in self.pieces:
+                                if [piece.x,piece.y] == data[1]:
+                                    danger_tiles.extend(piece.capture())
+                                    piece.reset_valid_moves()
+                        else:
+                            for piece in self.pieces:
+                                if [piece.x,piece.y] == data[1]:
+                                    for i in range(len(piece.check_moves())):
+                                        if piece.direction[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
+                                            danger_tiles.append(piece.valid_moves[i])
+                                    piece.reset_valid_moves()
+
+                    
+                    #moving king out of check
+                    for moves in self.pieces[0].check_moves():
+                        if moves not in danger_tiles:
+                            safe_tiles.append(moves)
+                    self.pieces[0].reset_valid_moves()
+                    # blocking the check by moving other pieces
+                    for piece in self.pieces:
+                        if piece.color == "white" and piece.type != "k":
+                            for moves in piece.check_moves():
+                                if moves in danger_tiles:
+                                    blocking_moves.append(moves)
+                        if piece.color == "white" and self.type == "p":
+                            for moves in piece.capture():
+                                if moves in danger_tiles:
+                                    blocking_moves.append(moves)
+                        piece.reset_valid_moves()
+
+                    
+
+                if [self.x2,self.y2] in safe_tiles:
+                    print("valid move")
+                    templist = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
+                    self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
+                    for piece in self.pieces:
+                        if [piece.x,piece.y] == [self.x1,self.y1]:
+                            piece.move(self.x2,self.y2)
+                        
+                            checks = []
+                            checks_by = []
+                            if self.turn == "white":
+                                checks.extend(self.pieces[0].if_under_check())
+                            elif self.turn == "black":
+                                checks.extend(self.pieces[1].if_under_check())
+                            if len(checks) > 0:
+                                print("invalid move! king is still under check")
+                                self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
+                                piece.move(self.x1,self.y1)
+                                loopcontinuer = True
+                                break
+                    self.toogle_turn()
+
 
             
             if loopcontinuer:
@@ -209,6 +441,7 @@ class Chess():
 #----------------------------------------PIECES----------------------------------------#
 class King():
     def __init__(self,x,y,color):
+        self.type = "k"
         self.x = x
         self.y = y
         self.color = color
@@ -251,56 +484,67 @@ class King():
         check_by_pawn = False
         check_by_queen = False
 
-        print(self.color)
-        rookh_moves = rookh_part.check_moves()
-        print("rook",rookh_moves)
-        bishop_moves = bishop_part.check_moves()
-        print("bishop",bishop_moves)
-        knight_moves = knight_part.check_moves()
-        print("knight",knight_moves)
-        pawn_moves = pawn_part.capture()
-        print("pawn",pawn_moves)
-        queen_moves = rookh_moves + bishop_moves
-        print("queen",queen_moves)
+        #print(self.color)
+        self.rookh_moves = rookh_part.check_moves()
+        #print("rook",rookh_moves)
+        self.bishop_moves = bishop_part.check_moves()
+        #print("bishop",bishop_moves)
+        self.knight_moves = knight_part.check_moves()
+        #print("knight",knight_moves)
+        self.pawn_moves = pawn_part.capture()
+        #print("pawn",pawn_moves)
+        self.queen_moves = self.rookh_moves + self.bishop_moves
+        #print("queen",queen_moves)
+        self.all_moves = self.queen_moves + self.knight_moves + self.pawn_moves
 
         if self.color == "white":
-            for a,b in knight_moves:
+            for a,b in self.knight_moves:
                 try:
                     if self.chess_board[a][b] == "n'":
+                        self.knight_pos =[a,b]
                         check_by_knight = True
                 except:
                     pass 
-            for a,b in pawn_moves:
+            for a,b in self.pawn_moves:
                 if self.chess_board[a][b] == "p'":
+                    self.pawn_pos = [a,b]
                     check_by_pawn = True
-            for a,b in queen_moves:
+            for a,b in self.queen_moves:
                 if self.chess_board[a][b] == "q'":
+                    self.queen_pos = [a,b]
                     check_by_queen = True
-            for a,b in rookh_moves:
+            for a,b in self.rookh_moves:
                 if self.chess_board[a][b] == "r'":
+                    self.rookh_pos=[a,b]
                     check_by_rookh = True
-            for a,b in bishop_moves:
+            for a,b in self.bishop_moves:
                 if self.chess_board[a][b] == "b'":
+                    self.bishop_pos = [a,b]
                     check_by_bishop = True
             
         if self.color == "black":
-            for a,b in knight_moves:
+            for a,b in self.knight_moves:
                 try:
                     if self.chess_board[a][b] == "n":
+                        self.knight_pos = [a,b]
                         check_by_knight = True
                 except:
                     pass
-            for a,b in pawn_moves:
+            for a,b in self.pawn_moves:
                 if self.chess_board[a][b] == "p":
+                    self.pawn_pos = [a,b]
                     check_by_pawn = True
-            for a,b in queen_moves:
+            for a,b in self.queen_moves:
                 if self.chess_board[a][b] == "q":
+                    self.queen_pos = [a,b]
                     check_by_queen = True
-            for a,b in rookh_moves:
+            for a,b in self.rookh_moves:
                 if self.chess_board[a][b] == "r":
+                    self.rookh_pos = [a,b]
                     check_by_rookh = True
-            for a,b in bishop_moves:
+            for a,b in self.bishop_moves:
                 if self.chess_board[a][b] == "b":
+                    self.bishop_pos = [a,b]
                     check_by_bishop = True
         return_list = []
         if check_by_rookh:
@@ -317,21 +561,26 @@ class King():
 
 class Queen():
     def __init__(self,x,y,color):
+        self.type = "q"
         self.x = x
         self.y = y
         self.color = color
         self.valid_moves = []
         self.chess_board = []
+        self.directions = []
 
     def check_moves(self):
         rookhpart = Rookh(self.x,self.y,self.color)
         bishoppart = Bishop(self.x,self.y,self.color)
         self.valid_moves.extend(rookhpart.check_moves())
+        self.directions.extend(rookhpart.directions)
         self.valid_moves.extend(bishoppart.check_moves())
+        self.directions.extend(bishoppart.directions)
         return self.valid_moves
 
     def reset_valid_moves(self):
         self.valid_moves = []
+        self.directions = []
 
     def move(self,x,y):
         self.x,self.y = x,y
@@ -342,12 +591,14 @@ class Queen():
 
 class Rookh():
     def __init__(self,x,y,color):
+        self.type = "r"
         self.x = x
         self.y = y
         self.color = color
         self.valid_moves = []
         self.chess_board = []
         self.first_move = True
+        self.directions = []
 
     def check_moves(self):
         #up moves
@@ -355,8 +606,10 @@ class Rookh():
             try:
                 if self.x + i in list(range(8)) and self.chess_board[self.x+i][self.y] == '':
                     self.valid_moves.append([self.x+i,self.y])
+                    self.directions.append("up")
                 elif self.x + i in list(range(8)) and self.color == "white" and self.chess_board[self.x+i][self.y] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x+i][self.y] in ["r","n","b","q","k","p"]:
                     self.valid_moves.append([self.x+i,self.y])
+                    self.directions.append("up")
                     break
                 else:
                     break
@@ -368,8 +621,10 @@ class Rookh():
             try:
                 if self.x - i in list(range(8)) and self.chess_board[self.x-i][self.y] == '':
                     self.valid_moves.append([self.x-i,self.y])
+                    self.directions.append("down")
                 elif self.x - i in list(range(8)) and self.color == "white" and self.chess_board[self.x-i][self.y] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x-i][self.y] in ["r","n","b","q","k","p"]:
                     self.valid_moves.append([self.x-i,self.y])
+                    self.directions.append("down")
                     break
                 else:
                     break
@@ -381,8 +636,10 @@ class Rookh():
             try:
                 if self.y + i in list(range(8)) and self.chess_board[self.x][self.y+i] == '':
                     self.valid_moves.append([self.x,self.y+i])
+                    self.directions.append("right")
                 elif self.y + i in list(range(8)) and self.color == "white" and self.chess_board[self.x][self.y+i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x][self.y+i] in ["r","n","b","q","k","p"]:
                     self.valid_moves.append([self.x,self.y+i])
+                    self.directions.append("right")
                     break
                 else:
                     break
@@ -394,8 +651,10 @@ class Rookh():
             try:
                 if self.y - i in list(range(8)) and self.chess_board[self.x][self.y-i] == '':
                     self.valid_moves.append([self.x,self.y-i])
+                    self.directions.append("left")
                 elif self.y - i in list(range(8)) and self.color == "white" and self.chess_board[self.x][self.y-i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x][self.y-i] in ["r","n","b","q","k","p"]:
                     self.valid_moves.append([self.x,self.y-i])
+                    self.directions.append("left")
                     break
                 else:
                     break
@@ -406,6 +665,7 @@ class Rookh():
 
     def reset_valid_moves(self):
         self.valid_moves = []
+        self.directions = []
 
     def move(self,x,y):
         self.x,self.y = x,y
@@ -416,34 +676,45 @@ class Rookh():
 
 class Knight():
     def __init__(self,x,y,color):
+        self.type = "n"
         self.x = x
         self.y = y
         self.color = color
         self.valid_moves = []
         self.chess_board = []
+        self.directions = []
 
     def check_moves(self):
         if self.x+2 in list(range(8)) and self.y+1 in list(range(8)):
             self.valid_moves.append([self.x+2,self.y+1])
+            self.directions.append("up-right")
         if self.x+2 in list(range(8)) and self.y-1 in list(range(8)):
             self.valid_moves.append([self.x+2,self.y-1])
+            self.directions.append("up-left")
         if self.x-2 in list(range(8)) and self.y+1 in list(range(8)):
             self.valid_moves.append([self.x-2,self.y+1])
+            self.directions.append("down-right")
         if self.x-2 in list(range(8)) and self.y-1 in list(range(8)):
             self.valid_moves.append([self.x-2,self.y-1])
+            self.directions.append("down-left")
         if self.x+1 in list(range(8)) and self.y+2 in list(range(8)):
             self.valid_moves.append([self.x+1,self.y+2])
+            self.directions.append("right-up")
         if self.x+1 in list(range(8)) and self.y-2 in list(range(8)):
             self.valid_moves.append([self.x+1,self.y-2])
+            self.directions.append("left-up")
         if self.x-1 in list(range(8)) and self.y+2 in list(range(8)):
             self.valid_moves.append([self.x-1,self.y+2])
+            self.directions.append("right-down")
         if self.x-1 in list(range(8)) and self.y-2 in list(range(8)):
             self.valid_moves.append([self.x-1,self.y-2])
+            self.directions.append("left-down")
 
         return self.valid_moves
 
     def reset_valid_moves(self):
         self.valid_moves = []
+        self.directions = []
 
     def move(self,x,y):
         self.x,self.y = x,y
@@ -454,11 +725,13 @@ class Knight():
 
 class Bishop():
     def __init__(self,x,y,color):
+        self.type = "b"
         self.x = x
         self.y = y
         self.color = color
         self.valid_moves = []
         self.chess_board = []
+        self.directions = []
 
     def check_moves(self):
         # up-right moves
@@ -466,8 +739,10 @@ class Bishop():
             try:
                 if (self.x + i in list(range(8)) and self.y + i in list(range(8))) and (self.chess_board[self.x+i][self.y+i] == ''):
                     self.valid_moves.append([self.x+i,self.y+i])
+                    self.directions.append("up-right")
                 elif (self.x + i in list(range(8)) and self.y + i in list(range(8))) and self.color == "white" and self.chess_board[self.x+i][self.y+i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x+i][self.y+i] in ["r","n","b","q","k","p"]:
                     self.valid_moves.append([self.x+i,self.y+i])
+                    self.directions.append("up-right")
                     break
                 else:
                     break
@@ -478,8 +753,10 @@ class Bishop():
             try:
                 if (self.x + i in list(range(8)) and self.y - i in list(range(8))) and self.chess_board[self.x+i][self.y-i] == '':
                     self.valid_moves.append([self.x+i,self.y-i])
+                    self.directions.append("up-left")
                 elif (self.x + i in list(range(8)) and self.y - i in list(range(8))) and  self.color == "white" and self.chess_board[self.x+i][self.y-i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x+i][self.y-i] in ["r","n","b","q","k","p"]:
                     self.valid_moves.append([self.x+i,self.y-i])
+                    self.directions.append("up-left")
                     break
                 else:
                     break
@@ -490,8 +767,10 @@ class Bishop():
             try:
                 if (self.x - i in list(range(8)) and self.y + i in list(range(8))) and self.chess_board[self.x-i][self.y+i] == '':
                     self.valid_moves.append([self.x-i,self.y+i])
+                    self.directions.append("down-right")
                 elif (self.x - i in list(range(8)) and self.y + i in list(range(8))) and self.color == "white" and self.chess_board[self.x-i][self.y+i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x-i][self.y+i] in ["r","n","b","q","k","p"]:
                     self.valid_moves.append([self.x-i,self.y+i])
+                    self.directions.append("down-right")
                     break
                 else:
                     break
@@ -502,8 +781,10 @@ class Bishop():
             try:
                 if (self.x - i in list(range(8)) and self.y - i in list(range(8))) and self.chess_board[self.x-i][self.y-i] == '':
                     self.valid_moves.append([self.x-i,self.y-i])
+                    self.directions.append("down-left")
                 elif (self.x - i in list(range(8)) and self.y - i in list(range(8))) and self.color == "white" and self.chess_board[self.x-i][self.y-i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x-i][self.y-i] in ["r","n","b","q","k","p"]:
                     self.valid_moves.append([self.x-i,self.y-i])
+                    self.directions.append("down-left")
                     break
                 else:
                     break
@@ -514,6 +795,7 @@ class Bishop():
 
     def reset_valid_moves(self):
         self.valid_moves = []
+        self.directions = []
 
     def move(self,x,y):
         self.x,self.y = x,y
@@ -524,6 +806,7 @@ class Bishop():
 
 class Pawn():
     def __init__(self,x,y,color,first_move = True):
+        self.type = "p"
         self.x = x
         self.y = y
         self.color = color
