@@ -1,4 +1,3 @@
-# continue at line 199
 
 class Chess():
     def __init__(self):
@@ -112,10 +111,8 @@ class Chess():
             print("no of checks",len(checks))
 
             # update chess_board for the pieces 
-
             for piece in self.pieces:
                 piece.update_chess_board(self.chess_board)
-
 
             loopbraker = False
             loopcontinuer = False
@@ -127,6 +124,7 @@ class Chess():
                 safe_tiles=[]
                 blocking_moves = []
                 print("CHECK!!")
+                print("!")
                 print(checks)
 
                 if self.turn == "white":
@@ -160,7 +158,7 @@ class Chess():
                                     piece.reset_valid_moves()
 
                     
-                    #moving king out of check
+                    # moving king out of check
                     for moves in self.pieces[0].check_moves():
                         if moves not in danger_tiles:
                             safe_tiles.append(moves)
@@ -206,7 +204,7 @@ class Chess():
                                         if piece.directions[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
                                             danger_tiles.append(piece.valid_moves[i])
                                     piece.reset_valid_moves()
-                    #moving king out of check
+                    # moving king out of check
                     for moves in self.pieces[1].check_moves():
                         if moves not in danger_tiles:
                             safe_tiles.append(moves)
@@ -235,9 +233,7 @@ class Chess():
                         print("White wins")
                         self.white_win = True
                     loopbraker = True
-                    break
-
-                
+                    break     
             
             print(f"{self.turn}'s turn")
             self.print_board()
@@ -256,8 +252,7 @@ class Chess():
             # Error : cannot capture your piece
             if (self.turn == "white" and self.chess_board[self.x2][self.y2] in ["r","n","b","q","k","p"]) or (self.turn == "black" and self.chess_board[self.x2][self.y2] in ["r'","n'","b'","q'","k'","b'","n'","r'"]):
                 print("Invalid move: Can not capture your own piece, Try again!")
-                continue
-            
+                continue 
             
             #capture
             if ((self.turn == "white" and self.chess_board[self.x2][self.y2] in ["q'","b'","n'","r'","p'"]) or (self.turn == "black" and self.chess_board[self.x2][self.y2] in ["q","b","n","r","p"])):
@@ -290,7 +285,7 @@ class Chess():
                                     loopcontinuer = True
                                     break
                                 self.toogle_turn()
-                                #loopbraker = True
+
                         elif [self.x2,self.y2] in self.pieces[index].check_moves():
                             print(self.pieces[index].valid_moves)
                             print("valid move")
@@ -309,7 +304,6 @@ class Chess():
                         elif self.turn == "black":
                             checks.extend(self.pieces[1].if_under_check())
                         
-                            #loopbraker = True
                         break
                 loopcontinuer = True
 
@@ -318,7 +312,6 @@ class Chess():
             if loopbraker:
                 break
 
-            
             #check moves
             if len(checks) > 0:
                 danger_tiles=[]
@@ -356,7 +349,6 @@ class Chess():
                                         if piece.directions[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
                                             danger_tiles.append(piece.valid_moves[i])
                                     piece.reset_valid_moves()
-
                     
                     #moving king out of check
                     for moves in self.pieces[0].check_moves():
@@ -404,7 +396,6 @@ class Chess():
                                         if piece.directions[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
                                             danger_tiles.append(piece.valid_moves[i])
                                     piece.reset_valid_moves()
-
                     
                     #moving king out of check
                     for moves in self.pieces[0].check_moves():
@@ -423,31 +414,52 @@ class Chess():
                                     blocking_moves.append(moves)
                         piece.reset_valid_moves()
 
-                    
-
-                if [self.x2,self.y2] in safe_tiles:
-                    print("valid move")
-                    templist = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
-                    self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
-                    for piece in self.pieces:
-                        if [piece.x,piece.y] == [self.x1,self.y1]:
-                            piece.move(self.x2,self.y2)
-                        
-                            checks = []
-                            checks_by = []
-                            if self.turn == "white":
-                                checks.extend(self.pieces[0].if_under_check())
-                            elif self.turn == "black":
-                                checks.extend(self.pieces[1].if_under_check())
-                            if len(checks) > 0:
-                                print("invalid move! king is still under check")
+                index = -1
+                for piece in self.pieces:   
+                    index+=1
+                    if [piece.x,piece.y] == [self.x1,self.y1] and [self.x2,self.y2] in blocking_moves:
+                        print(index)
+                        print([self.x2,self.y2])
+                        if caputre_move and type(self.pieces[index]) == Pawn:
+                            if [self.x2,self.y2] in self.pieces[index].capture():
+                                print(self.pieces[index].valid_moves)
+                                print("capture move")
+                                templist = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
+                                self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
+                                self.pieces[index].move(self.x2,self.y2)
+                                if (self.turn == "white" and len(self.pieces[0].if_under_check())>0) or (self.turn == "black" and len(self.pieces[1].if_under_check())>0):
+                                    print("invalid move! moving this piece will put your king under check")
+                                    self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
+                                    self.pieces[index].move(self.x1,self.y1)
+                                    loopcontinuer = True
+                                    break
+                                self.toogle_turn()
+                                #loopbraker = True
+                        elif [self.x2,self.y2] in self.pieces[index].check_moves():
+                            print(self.pieces[index].valid_moves)
+                            print("valid move")
+                            templist = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
+                            self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
+                            self.pieces[index].move(self.x2,self.y2)
+                            if (self.turn == "white" and len(self.pieces[0].if_under_check())>0) or (self.turn == "black" and len(self.pieces[1].if_under_check())>0):
+                                print("invalid move! moving this piece will put your king under check")
                                 self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
-                                piece.move(self.x1,self.y1)
-                                loopcontinuer = True
+                                self.pieces[index].move(self.x1,self.y1)
                                 break
-                    self.toogle_turn()
+                            self.toogle_turn()
 
+                    elif piece.type == "k" and [self.x2,self.y2] in safe_tiles:
+                        self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
+                        self.pieces[index].move(self.x2,self.y2)
 
+                    checks = []
+                    checks_by = []
+
+                    if self.turn == "white":
+                        checks.extend(self.pieces[0].if_under_check())
+                    elif self.turn == "black":
+                        checks.extend(self.pieces[1].if_under_check())
+                    
             
             if loopcontinuer:
                 continue
@@ -502,17 +514,11 @@ class King():
         check_by_pawn = False
         check_by_queen = False
 
-        #print(self.color)
         self.rookh_moves = rookh_part.check_moves()
-        #print("rook",rookh_moves)
         self.bishop_moves = bishop_part.check_moves()
-        #print("bishop",bishop_moves)
         self.knight_moves = knight_part.check_moves()
-        #print("knight",knight_moves)
         self.pawn_moves = pawn_part.capture()
-        #print("pawn",pawn_moves)
         self.queen_moves = self.rookh_moves + self.bishop_moves
-        #print("queen",queen_moves)
         self.all_moves = self.queen_moves + self.knight_moves + self.pawn_moves
 
         if self.color == "white":
@@ -869,7 +875,6 @@ class Pawn():
 
     def update_chess_board(self,chess_board):
         self.chess_board = chess_board
-
 
 
 chess = Chess()
