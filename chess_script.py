@@ -155,7 +155,7 @@ class Chess():
                             for piece in self.pieces:
                                 if [piece.x,piece.y] == data[1]:
                                     for i in range(len(piece.check_moves())):
-                                        if piece.direction[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
+                                        if piece.directions[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
                                             danger_tiles.append(piece.valid_moves[i])
                                     piece.reset_valid_moves()
 
@@ -171,7 +171,7 @@ class Chess():
                             for moves in piece.check_moves():
                                 if moves in danger_tiles:
                                     blocking_moves.append(moves)
-                        if piece.color == "white" and self.type == "p":
+                        if piece.color == "white" and piece.type == "p":
                             for moves in piece.capture():
                                 if moves in danger_tiles:
                                     blocking_moves.append(moves)
@@ -203,9 +203,28 @@ class Chess():
                             for piece in self.pieces:
                                 if [piece.x,piece.y] == data[1]:
                                     for i in range(len(piece.check_moves())):
-                                        if piece.direction[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
+                                        if piece.directions[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
                                             danger_tiles.append(piece.valid_moves[i])
                                     piece.reset_valid_moves()
+                    #moving king out of check
+                    for moves in self.pieces[1].check_moves():
+                        if moves not in danger_tiles:
+                            safe_tiles.append(moves)
+                    self.pieces[1].reset_valid_moves()
+                    # blocking the check by moving other pieces
+                    for piece in self.pieces:
+                        if piece.color == "black" and piece.type != "k":
+                            for moves in piece.check_moves():
+                                if moves in danger_tiles:
+                                    blocking_moves.append(moves)
+                        if piece.color == "black" and piece.type == "p":
+                            for moves in piece.capture():
+                                if moves in danger_tiles:
+                                    blocking_moves.append(moves)
+                        piece.reset_valid_moves()
+
+                print("danger",danger_tiles)
+                print("block",blocking_moves)
 
                 if len(safe_tiles+blocking_moves) == 0:
                     print("CHECKMATE!!")
@@ -214,7 +233,9 @@ class Chess():
                         self.black_win = True
                     elif self.turn == "black":
                         print("White wins")
-                        self.white_win = True 
+                        self.white_win = True
+                    loopbraker = True
+                    break
 
                 
             
@@ -268,10 +289,6 @@ class Chess():
                                     self.pieces[index].move(self.x1,self.y1)
                                     loopcontinuer = True
                                     break
-                                if self.turn == "white":
-                                    checks.extend(self.pieces[0].if_under_check())
-                                elif self.turn == "black":
-                                    checks.extend(self.pieces[1].if_under_check())
                                 self.toogle_turn()
                                 #loopbraker = True
                         elif [self.x2,self.y2] in self.pieces[index].check_moves():
@@ -285,12 +302,13 @@ class Chess():
                                 self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
                                 self.pieces[index].move(self.x1,self.y1)
                                 break
-
-                            if self.turn == "white":
-                                checks.extend(self.pieces[0].if_under_check())
-                            elif self.turn == "black":
-                                checks.extend(self.pieces[1].if_under_check())
                             self.toogle_turn()
+
+                        if self.turn == "white":
+                            checks.extend(self.pieces[0].if_under_check())
+                        elif self.turn == "black":
+                            checks.extend(self.pieces[1].if_under_check())
+                        
                             #loopbraker = True
                         break
                 loopcontinuer = True
@@ -335,7 +353,7 @@ class Chess():
                             for piece in self.pieces:
                                 if [piece.x,piece.y] == data[1]:
                                     for i in range(len(piece.check_moves())):
-                                        if piece.direction[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
+                                        if piece.directions[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
                                             danger_tiles.append(piece.valid_moves[i])
                                     piece.reset_valid_moves()
 
@@ -351,7 +369,7 @@ class Chess():
                             for moves in piece.check_moves():
                                 if moves in danger_tiles:
                                     blocking_moves.append(moves)
-                        if piece.color == "white" and self.type == "p":
+                        if piece.color == "white" and piece.type == "p":
                             for moves in piece.capture():
                                 if moves in danger_tiles:
                                     blocking_moves.append(moves)
@@ -383,7 +401,7 @@ class Chess():
                             for piece in self.pieces:
                                 if [piece.x,piece.y] == data[1]:
                                     for i in range(len(piece.check_moves())):
-                                        if piece.direction[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
+                                        if piece.directions[i] == data[2] and piece.valid_moves[i] not in danger_tiles:
                                             danger_tiles.append(piece.valid_moves[i])
                                     piece.reset_valid_moves()
 
@@ -399,7 +417,7 @@ class Chess():
                             for moves in piece.check_moves():
                                 if moves in danger_tiles:
                                     blocking_moves.append(moves)
-                        if piece.color == "white" and self.type == "p":
+                        if piece.color == "white" and piece.type == "p":
                             for moves in piece.capture():
                                 if moves in danger_tiles:
                                     blocking_moves.append(moves)
