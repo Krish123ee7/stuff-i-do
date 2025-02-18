@@ -19,38 +19,38 @@ class Chess():
 
 
         self.pieces =[
-            King(0,4,'white'),
-            King(7,4,'black'),
-            Queen(0,3,'white'),
-            Queen(7,3,'black'),
-            Knight(0,1,'white'),
-            Knight(0,6,'white'),
-            Knight(7,1,'black'),
-            Knight(7,6,'black'),
-            Bishop(0,5,'white'),
-            Bishop(0,2,'white'),
-            Bishop(7,5,'black'),
-            Bishop(7,2,'black'),
-            Rookh(0,0,'white'),
-            Rookh(0,7,'white'),
-            Rookh(7,0,'black'),
-            Rookh(7,7,'black'),
-            Pawn(1,0,'white'),
-            Pawn(1,1,'white'),
-            Pawn(1,2,'white'),
-            Pawn(1,3,'white'),
-            Pawn(1,4,'white'),
-            Pawn(1,5,'white'),
-            Pawn(1,6,'white'),
-            Pawn(1,7,'white'),
-            Pawn(6,0,'black'),
-            Pawn(6,1,'black'),
-            Pawn(6,2,'black'),
-            Pawn(6,3,'black'),
-            Pawn(6,4,'black'),
-            Pawn(6,5,'black'),
-            Pawn(6,6,'black'),
-            Pawn(6,7,'black')]
+            King(0,4,'white'),#0
+            King(7,4,'black'),#1
+            Queen(0,3,'white'),#2
+            Queen(7,3,'black'),#3
+            Knight(0,1,'white'),#4
+            Knight(0,6,'white'),#5
+            Knight(7,1,'black'),#6
+            Knight(7,6,'black'),#7
+            Bishop(0,5,'white'),#8
+            Bishop(0,2,'white'),#9
+            Bishop(7,5,'black'),#10
+            Bishop(7,2,'black'),#11
+            Rookh(0,0,'white'),#12
+            Rookh(0,7,'white'),#13
+            Rookh(7,0,'black'),#14
+            Rookh(7,7,'black'),#15
+            Pawn(1,0,'white'),#16
+            Pawn(1,1,'white'),#17
+            Pawn(1,2,'white'),#18
+            Pawn(1,3,'white'),#19
+            Pawn(1,4,'white'),#20
+            Pawn(1,5,'white'),#21
+            Pawn(1,6,'white'),#22
+            Pawn(1,7,'white'),#23
+            Pawn(6,0,'black'),#24
+            Pawn(6,1,'black'),#25
+            Pawn(6,2,'black'),#26
+            Pawn(6,3,'black'),#27
+            Pawn(6,4,'black'),#28
+            Pawn(6,5,'black'),#29
+            Pawn(6,6,'black'),#30
+            Pawn(6,7,'black')]#31
 
         self.selected_piece = None
     #basic thing
@@ -266,6 +266,81 @@ class Chess():
             if len(checks) == 0:
                 index = -1
                 
+                # en passant
+
+                # castling 
+                if self.pieces[0].first_move and self.pieces[0].x == self.x1 and self.pieces[0].y == self.y1:
+                    if  self.pieces[12].first_move and  (self.chess_board[0][1],self.chess_board[0][2],self.chess_board[0][3]) == ("","","")  and [self.x2,self.y2] == [0,2]:
+                        temp_var1 = King(0,1,"white")
+                        temp_var2 = King(0,2,"white")
+                        temp_var3 = King(0,3,"white")
+                        temp_var1.update_chess_board(self.chess_board)
+                        temp_var2.update_chess_board(self.chess_board)
+                        temp_var3.update_chess_board(self.chess_board)
+                        templist_ = []
+                        templist_.extend(temp_var1.if_under_check())
+                        templist_.extend(temp_var2.if_under_check())
+                        templist_.extend(temp_var3.if_under_check())
+                        if len(templist_) == 0:
+                            self.chess_board[0][0],self.chess_board[0][1],self.chess_board[0][2],self.chess_board[0][3] = "","r","k",""
+                            self.pieces[0].move(0,2)
+                            self.pieces[12].move(0,3)
+                            self.toogle_turn()
+                            loopcontinuer = True
+
+                    elif  self.pieces[13].first_move and (self.chess_board[0][5],self.chess_board[0][6]) == ("","")  and [self.x2,self.y2] == [0,6]:
+                        temp_var1 = King(0,5,"white")
+                        temp_var2 = King(0,6,"white")
+                        temp_var1.update_chess_board(self.chess_board)
+                        temp_var2.update_chess_board(self.chess_board)
+                        templist_ = []
+                        templist_.extend(temp_var1.if_under_check())
+                        templist_.extend(temp_var2.if_under_check())
+                        if len(templist_) == 0:
+                            self.chess_board[0][4],self.chess_board[0][5],self.chess_board[0][6],self.chess_board[0][7] = "","r","k",""
+                            self.pieces[0].move(0,6)
+                            self.pieces[13].move(0,5)
+                            self.toogle_turn()
+                            loopcontinuer = True
+
+                elif self.pieces[1].first_move and self.pieces[1].x == self.x1 and self.pieces[1].y == self.y1:
+                    if  self.pieces[14].first_move and  (self.chess_board[7][1],self.chess_board[7][2],self.chess_board[7][3]) == ("","","")  and [self.x2,self.y2] == [7,2]:
+                        temp_var1 = King(7,1,"black")
+                        temp_var2 = King(7,2,"black")
+                        temp_var3 = King(7,3,"black")
+                        temp_var1.update_chess_board(self.chess_board)
+                        temp_var2.update_chess_board(self.chess_board)
+                        temp_var3.update_chess_board(self.chess_board)
+                        templist_ = []
+                        templist_.extend(temp_var1.if_under_check())
+                        templist_.extend(temp_var2.if_under_check())
+                        templist_.extend(temp_var3.if_under_check())
+                        if len(templist_) == 0:
+                            self.chess_board[7][0],self.chess_board[7][1],self.chess_board[7][2],self.chess_board[7][3] = "","r'","k'",""
+                            self.pieces[1].move(7,2)
+                            self.pieces[14].move(7,3)
+                            self.toogle_turn()
+                            loopcontinuer = True
+
+                    elif  self.pieces[15].first_move and (self.chess_board[7][5],self.chess_board[7][6]) == ("","")  and [self.x2,self.y2] == [7,6]:
+                        temp_var1 = King(7,5,"black")
+                        temp_var2 = Rookh(7,6,"black")
+                        temp_var1.update_chess_board(self.chess_board)
+                        temp_var2.update_chess_board(self.chess_board)
+                        templist_ = []
+                        templist_.extend(temp_var1.if_under_check())
+                        templist_.extend(temp_var2.if_under_check())
+                        if len(templist_) == 0:
+                            self.chess_board[7][4],self.chess_board[7][5],self.chess_board[7][6],self.chess_board[7][7] = "","r'","k'",""
+                            self.pieces[1].move(7,6)
+                            self.pieces[15].move(7,5)
+                            self.toogle_turn()
+                            loopcontinuer = True
+
+
+
+                        
+
                 for piece in self.pieces:
                     index +=1
                     if [piece.x,piece.y] == [self.x1,self.y1]:
@@ -475,6 +550,7 @@ class King():
         self.x = x
         self.y = y
         self.color = color
+        self.first_move = True
         self.valid_moves = []
         self.chess_board = []
         self.under_check = False
@@ -492,6 +568,7 @@ class King():
     def move(self,x,y):
         self.x,self.y = x,y
         self.reset_valid_moves()
+        self.first_move = False
 
     def update_chess_board(self,chess_board):
         self.chess_board = chess_board  
@@ -694,6 +771,7 @@ class Rookh():
     def move(self,x,y):
         self.x,self.y = x,y
         self.reset_valid_moves()
+        self.first_move = False
 
     def update_chess_board(self,chess_board):
         self.chess_board = chess_board
