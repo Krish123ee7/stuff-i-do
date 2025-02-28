@@ -16,7 +16,7 @@ class Chess():
         self.y1 = None
         self.x2 = None
         self.y2 = None
-        self.chess_data = ["d2", "d4", "d7", "d6","g1", "f3", "g7", "g6","g2", "g3", "f8", "g7","f1", "g2", "b8", "c6","c2", "c3", "e7", "e5","d4", "e5", "d6", "e5","d1", "b3", "g8", "e7","c1", "g5", "h7", "h6","g5", "e3", "e8", "f8","e1", "g1", "a8", "b8","b1", "d2", "e7", "f5","e3", "c5", "f8", "e8","d8", "e4", "b7", "b6","c5", "b4", "c6", "b4","b3", "b4", "c7", "c5","b4", "b5", "c8", "b7","a1", "d1", "d8", "e7","e4", "d2", "e5", "e4","f3", "h4", "f5", "h4","g3", "h4", "e7", "h4","f2", "f3", "f8", "e5","h2", "h3", "e4", "e3","b5", "c4", "g7", "g3","e1", "f2", "g3", "f2","g1", "h1", "e3", "d2","c4", "d3", "f2", "e1","d1", "e1", "d2", "e1","g2", "f1", "e1", "f1"]
+        self.chess_data = ["d2", "d4", "d7", "d6","g1", "f3", "g7", "g6","g2", "g3", "f8", "g7","f1", "g2", "b8", "c6","c2", "c3", "e7", "e5","d4", "e5", "d6", "e5","d1", "b3", "g8", "e7","c1", "g5", "h7", "h6","g5", "e3", "e8", "g8","e1", "g1", "a8", "b8","b1", "d2", "e7", "f5","e3", "c5", "f8", "e8","d2", "e4", "b7", "b6","c5", "b4", "c6", "b4","b3", "b4", "c7", "c5","b4", "b5", "c8", "b7","a1", "d1", "d8", "e7","e4", "d2", "e5", "e4","f3", "h4", "f5", "h4","g3", "h4", "e7", "h4","f2", "f3", "g7", "e5","h2", "h3", "e4", "e3","b5", "c4", "h4", "g3","f1", "f2", "g3", "f2","g1", "h1", "e3", "d2","c4", "d3", "f2", "e1","d1", "e1", "d2", "e1","g2", "f1", "e1", "f1"]
 
 
         self.pieces =[
@@ -241,6 +241,7 @@ class Chess():
 #----------------------------------------MAIN----------------------------------------#
     def start_game(self):
         print()
+        
 
         self.checks =[]
         self.checks_by = [] #[type,piece,direction]
@@ -291,9 +292,14 @@ class Chess():
             #normal move
             else:
                 print("normal move")
+            for piece in self.pieces:
+                if type(piece) == Queen:
+                    print("queen", piece.x,piece.y)
 
             if len(self.checks) == 0:
                 index = -1
+                
+
                 
                 # en passant
                 #white
@@ -307,6 +313,10 @@ class Chess():
                                             if [black_piece.x,black_piece.y] == [4,self.y2] and black_piece.en_passant_var == 1:
                                                 white_piece.move(self.x2,self.y2)
                                                 self.chess_board[self.x1][self.y1],self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y2] = "","p",""
+                                                for j in range(len(self.pieces)+1):
+                                                    if [self.pieces[j].x,self.pieces[j].y] == [self.x2-1,self.y2]:
+                                                        self.pieces.pop(j)
+                                                        break
                 #black
                 elif self.turn == "black":
                     for black_piece in list(self.pieces)[24:32]:
@@ -318,6 +328,12 @@ class Chess():
                                             if [white_piece.x,white_piece.y] == [3,self.y2] and white_piece.en_passant_var == 1:
                                                 black_piece.move(self.x2,self.y2)
                                                 self.chess_board[self.x1][self.y1],self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y2] = "","p'",""
+                                                for j in range(len(self.pieces)+1):
+                                                    if [self.pieces[j].x,self.pieces[j].y] == [self.x2+1,self.y2]:
+                                                        self.pieces.pop(j)
+                                                        break
+
+                    
                                     
                 # castling 
                 if self.pieces[0].first_move and self.pieces[0].x == self.x1 and self.pieces[0].y == self.y1:
@@ -407,28 +423,51 @@ class Chess():
                             if [self.x2,self.y2] in self.pieces[index].capture():
                                 print(self.pieces[index].valid_moves)
                                 print("capture move")
-                                templist = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
-                                self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
+                                capture_var = self.chess_board[self.x2][self.y2]
                                 self.pieces[index].move(self.x2,self.y2)
                                 if (self.turn == "white" and len(self.pieces[0].if_under_check())>0) or (self.turn == "black" and len(self.pieces[1].if_under_check())>0):
                                     print("invalid move! moving this piece will put your king under check")
-                                    self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
                                     self.pieces[index].move(self.x1,self.y1)
                                     self.loopcontinuer = True
                                     break
+                                
+                                for j in range(len(self.pieces)+1):
+                                    if [self.pieces[j].x,self.pieces[j].y] == [self.x2,self.y2] and self.pieces[j].type == capture_var[0] and self.pieces[j].color != self.turn:
+                                        self.pieces.pop(j)
+                                        break
+                                self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
+                                if (piece.color=="white" and self.y2 == 7)or(piece.color=="black" and self.y2 == 0):
+                                    piece.promote()
+                                    if self.color == "white":
+                                        self.chess_board[self.x2][self.y2] = piece.type
+                                    else:
+                                        self.chess_board[self.x2][self.y2]= f"{piece.type}'"
+                                    
                                 self.toogle_turn()
 
                         elif [self.x2,self.y2] in self.pieces[index].check_moves():
                             print(self.pieces[index].valid_moves)
                             print("valid move")
-                            templist = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
-                            self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
+                            capture_var = [False,self.chess_board[self.x2][self.y2]]
+                            if self.chess_board[self.x2][self.y2] != "":
+                                capture_var = [True,self.chess_board[self.x2][self.y2]]
                             self.pieces[index].move(self.x2,self.y2)
                             if (self.turn == "white" and len(self.pieces[0].if_under_check())>0) or (self.turn == "black" and len(self.pieces[1].if_under_check())>0):
                                 print("invalid move! moving this piece will put your king under check")
-                                self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
                                 self.pieces[index].move(self.x1,self.y1)
                                 break
+                            if capture_var[0]:
+                                for j in range(len(self.pieces)+1):
+                                    if [self.pieces[j].x,self.pieces[j].y] == [self.x2,self.y2] and self.pieces[j].type == capture_var[1][0] and self.pieces[j].color != self.turn:
+                                        self.pieces.pop(j)
+                                        break
+                            self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
+                            if ((piece.color=="white" and self.y2 == 7)or(piece.color=="black" and self.y2 == 0)) and piece.type == 'p':
+                                    piece.promote()
+                                    if self.color == "white":
+                                        self.chess_board[self.x2][self.y2] = piece.type
+                                    else:
+                                        self.chess_board[self.x2][self.y2]= f"{piece.type}'"
                             self.toogle_turn()
 
                         else:
@@ -450,56 +489,80 @@ class Chess():
 
             #check moves
             if len(self.checks) > 0:
+                print(self.checks_by)
+                attaking_pos = []
+                for i in self.checks_by:
+                    attaking_pos.append(i[1])
 
                 for piece in self.pieces:   
-                    if [piece.x,piece.y] == [self.x1,self.y1] and [self.x2,self.y2] in self.blocking_moves:
+                    if [piece.x,piece.y] == [self.x1,self.y1] and ([self.x2,self.y2] in self.blocking_moves or [self.x2,self.y2] in attaking_pos):
                         print([self.x2,self.y2])
-                        if caputre_move and self.chess_board[self.x2][self.y2] != "" and type(self.piece) == Pawn:
+                        if caputre_move and self.chess_board[self.x2][self.y2] != "" and type(piece) == Pawn:
                             if [self.x2,self.y2] in piece.capture():
                                 print(piece.valid_moves)
                                 print("capture move")
-                                templist = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
-                                self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
                                 piece.move(self.x2,self.y2)
                                 if (self.turn == "white" and len(self.pieces[0].if_under_check())>0) or (self.turn == "black" and len(self.pieces[1].if_under_check())>0):
                                     print("invalid move! moving this piece will put your king under check")
-                                    self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
                                     piece.move(self.x1,self.y1)
                                     self.loopcontinuer = True
                                     break
+                                self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
+                                if ((piece.color=="white" and self.y2 == 7)or(piece.color=="black" and self.y2 == 0)) and piece.type == 'p':
+                                    piece.promote()
+                                    if self.color == "white":
+                                        self.chess_board[self.x2][self.y2] = piece.type
+                                    else:
+                                        self.chess_board[self.x2][self.y2]= f"{piece.type}'"
                                 self.toogle_turn()
+                                break
                                 #self.loopbraker = True
-                        elif [self.x2,self.y2] in self.pieces[index].check_moves():
+                        elif [self.x2,self.y2] in piece.check_moves():
+                            print("here")
                             print(piece.valid_moves)
                             print("valid move")
-                            templist = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
+                            temp_list = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
                             self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
                             piece.move(self.x2,self.y2)
                             if (self.turn == "white" and len(self.pieces[0].if_under_check())>0) or (self.turn == "black" and len(self.pieces[1].if_under_check())>0):
                                 print("invalid move! moving this piece will put your king under check")
-                                self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
+                                self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = temp_list
                                 piece.move(self.x1,self.y1)
                                 break
+                            if ((piece.color=="white" and self.y2 == 7)or(piece.color=="black" and self.y2 == 0)) and piece.type == 'p':
+                                piece.promote()
+                                if self.color == "white":
+                                    self.chess_board[self.x2][self.y2] = piece.type
+                                else:
+                                    self.chess_board[self.x2][self.y2]= f"{piece.type}'"
                             self.toogle_turn()
+                            break
 
-                    elif piece.type == "k" and [self.x2,self.y2] in self.safe_tiles:
+                        
+
+                    print([self.x2,self.y2] in self.safe_tiles)
+                    
+                    if [piece.x,piece.y] == [self.x1,self.y1] and piece.type == "k" and [self.x2,self.y2] in self.safe_tiles:
+                        print("this should be")
                         templist = self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1]
                         self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = self.chess_board[self.x1][self.y1],''
                         piece.move(self.x2,self.y2)
-                        if (self.turn == "white" and len(self.pieces[0].if_under_check())>0) or (self.turn == "black" and len(self.pieces[1].if_under_check())>0):
-                            print("invalid move! moving this piece will put your king under check")
-                            self.chess_board[self.x2][self.y2],self.chess_board[self.x1][self.y1] = templist
-                            piece.move(self.x1,self.y1)
-                            break
+                        if ((piece.color=="white" and self.y2 == 7)or(piece.color=="black" and self.y2 == 0)) and piece.type == 'p':
+                            piece.promote()
+                            if self.color == "white":
+                                self.chess_board[self.x2][self.y2] = piece.type
+                            else:
+                                self.chess_board[self.x2][self.y2]= f"{piece.type}'"
                         self.toogle_turn()
+                        break
 
-                    self.checks = []
-                    self.checks_by = []
-
-                    if self.turn == "white":
-                        self.checks.extend(self.pieces[0].if_under_check())
-                    elif self.turn == "black":
-                        self.checks.extend(self.pieces[1].if_under_check())
+                self.checks = []
+                self.checks_by = []
+                
+                if self.turn == "white":
+                    self.checks.extend(self.pieces[0].if_under_check())
+                elif self.turn == "black":
+                    self.checks.extend(self.pieces[1].if_under_check())
                     
             
             if self.loopcontinuer:
@@ -807,17 +870,37 @@ class Bishop(Piece):
 
 
 class Pawn(Piece):
+    def __init__(self):
+        super().__init__
+        self.promoted = False
+        
 
     def check_moves(self):
-        if self.color == "white" and self.chess_board[self.x+1][self.y] == '':
-            if self.first_move:
-                self.valid_moves.append([self.x+2,self.y])
-            self.valid_moves.append([self.x+1,self.y])
+        if not self.promoted:
+            if self.color == "white" and self.chess_board[self.x+1][self.y] == '':
+                if self.first_move:
+                    self.valid_moves.append([self.x+2,self.y])
+                self.valid_moves.append([self.x+1,self.y])
 
-        elif self.color == "black" and self.chess_board[self.x-1][self.y] == '':
-            if self.first_move:
-                self.valid_moves.append([self.x-2,self.y])
-            self.valid_moves.append([self.x-1,self.y])
+            elif self.color == "black" and self.chess_board[self.x-1][self.y] == '':
+                if self.first_move:
+                    self.valid_moves.append([self.x-2,self.y])
+                self.valid_moves.append([self.x-1,self.y])
+        else:
+            if self.type == 'r':
+                rookh_part = Rookh(self.x,self.y,self.color,'r')
+                return rookh_part.check_moves()
+            elif self.type == 'b':
+                bishop_part = Bishop(self.x,self.y,self.color,'r')
+                return bishop_part.check_moves()
+            elif self.type == 'n':
+                knight_part = Knight(self.x,self.y,self.color,'r')
+                return knight_part.check_moves()
+            elif self.type == 'q':
+                queen_part = Queen(self.x,self.y,self.color,'r')
+                return queen_part.check_moves()
+                
+            
         
         
         return self.valid_moves
@@ -834,6 +917,21 @@ class Pawn(Piece):
             if a in list(range(8)) and b in list(range(8)):
                 self.valid_moves.append([a,b])
         return self.valid_moves
+    def promote(self, type_ = input("select the you want to promote to: \n r,b,n,q \n")):
+        self.promoted = True
+        if type_ == 'r':
+            self.type ='r'
+        elif type_ == 'b':
+            self.type ='b'
+        elif type_ == 'n':
+            self.type ='n'
+        elif type_ == 'q':
+            self.type ='q'
+        else:
+            print("incorrect input try again")
+            self.promote()
+        
+            
 
 
 chess = Chess()
