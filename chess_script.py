@@ -1,4 +1,4 @@
-# debug at 848
+
 class Chess():
     def __init__(self):
         self.chess_board = [["r","n","b","q","k","b","n","r"],
@@ -56,6 +56,7 @@ class Chess():
 
         self.checks =[]
         self.checks_by = [] #[type,piece,direction]
+    
     #basic thing
     def print_board(self):
         alph=['a','b','c','d','e','f','g','h']
@@ -89,7 +90,7 @@ class Chess():
         return x,y
             
     def input_data(self,txt):
-        if False:
+        if True:
             try:
                 x,y = self.txt_to_pos(input(txt))
                 if (x and y) not in list(range(8)):
@@ -100,41 +101,12 @@ class Chess():
                 self.input_data()
             else:
                 return x,y
-        if True:
+        else:
             
             x,y = self.txt_to_pos(self.chess_data[0])
             print(x,y,self.chess_data[0])
             self.chess_data.pop(0)
             return x,y
-
-    def opposit(self,data):
-    
-        if data == "right":
-            return "left"
-        elif data == "left":
-            return "right"
-        elif data == "up":
-            return "down"
-        elif data == "down":
-            return "up"
-        elif data == "up-right":
-            return "down-left"
-        elif data == "up-left":
-            return "down-right"
-        elif data == "down-rigth":
-            return "up-left"
-        elif data == "down-left":
-            return "up-right"
-        elif data == "right-up":
-            return "left-down"
-        elif data == "left-up":
-            return "right-down"
-        elif data == "rigth-down":
-            return "left-up"
-        elif data == "left-down":
-            return "right-up"
-
-
 
     def under_check(self):
         danger_tiles=[]
@@ -159,7 +131,6 @@ class Chess():
                     for (a,b) in piece.check_moves():
                         index += 1
                         if self.chess_board[a][b] == "k" and piece.color == "black":
-                            print("this?")
                             self.checks_by.append([piece.type,[piece.x,piece.y],piece.directions[index]])
                             print([piece.type,[piece.x,piece.y],piece.directions[index]])
                 piece.reset_valid_moves()
@@ -242,8 +213,7 @@ class Chess():
                                         danger_tiles.append(piece.valid_moves[i])
                                 except:
                                     pass
-                                    # if piece.valid_moves[i] not in danger_tiles  and [piece.valid_moves[i][0],piece.valid_moves[i][1]] in [list(range(8)),list(range(8))]:
-                                    #     danger_tiles.append(piece.valid_moves[i])
+                                    
                         piece.reset_valid_moves()
             # moving king out of check
             for moves in self.pieces[1].check_moves():
@@ -267,11 +237,8 @@ class Chess():
                                 self.blocking_moves.append(moves)
                 piece.reset_valid_moves()
 
-        print("danger",danger_tiles)
-        print("block",self.blocking_moves)
-        print("safe",self.safe_tiles)
-
         if len(self.safe_tiles+self.blocking_moves) == 0 and len(danger_tiles)>0 and (len(self.pieces[0].if_under_check())>0 or len(self.pieces[1].if_under_check())>0):
+            self.print_board()
             print("CHECKMATE!!")
             if self.turn == "white":
                 print("Black wins")
@@ -281,9 +248,6 @@ class Chess():
                 self.white_win = True
             self.loopbraker = True
             self.loopcontinuer = True
-        # if len(danger_tiles) == 0:
-        #     self.checks_by = []
-
 
     def promote(self,x,y,color,txt="select the you want to promote to: \n r,b,n,q \n"):
         txt = input(txt)
@@ -299,18 +263,8 @@ class Chess():
         else:
             self.promote(x,y,color, "plese try again \n select the you want to promote to: \n r,b,n,q \n")
 
-
-                
-
-
-    
-        
-            
 #----------------------------------------MAIN----------------------------------------#
     def start_game(self):
-        print()
-        
-
         
         while (self.white_win and self.black_win) == False:
             print("no of self.checks",len(self.checks))
@@ -335,12 +289,10 @@ class Chess():
             self.x1,self.y1 = self.input_data("enter the position of the piece that you want to select: ")
             if (self.turn == "white" and self.chess_board[self.x1][self.y1] not in ["r","n","b","q","k","p"]) or (self.turn == "black" and self.chess_board[self.x1][self.y1] not in ["r'","n'","b'","q'","k'","p'"]):
                 print("please select your own piece, Try again!")
-                break
                 continue
             # ERROR : selected blank space
             if self.chess_board[self.x1][self.y1] == '':
                 print("No piece at the position, Try again!")
-                break
                 continue
 
             self.x2,self.y2 = self.input_data("enter the position where you want to move/caputre: ")
@@ -348,7 +300,6 @@ class Chess():
             # Error : cannot capture your piece
             if (self.turn == "white" and self.chess_board[self.x2][self.y2] in ["r","n","b","q","k","p"]) or (self.turn == "black" and self.chess_board[self.x2][self.y2] in ["r'","n'","b'","q'","k'","b'","n'","r'"]):
                 print("Invalid move: Can not capture your own piece, Try again!")
-                break
                 continue 
             
             #capture
@@ -447,11 +398,8 @@ class Chess():
                         temp_var3.update_chess_board(self.chess_board)
                         templist_ = []
                         templist_.extend(temp_var1.if_under_check())
-                        print(templist_)
                         templist_.extend(temp_var2.if_under_check())
-                        print(templist_)
                         templist_.extend(temp_var3.if_under_check())
-                        print(templist_)
                         temp_var1.reset_valid_moves()
                         temp_var2.reset_valid_moves()
                         temp_var3.reset_valid_moves()
@@ -484,11 +432,8 @@ class Chess():
                 for piece in self.pieces:
                     index +=1
                     if [piece.x,piece.y] == [self.x1,self.y1]:
-                        print(index)
-                        print([self.x2,self.y2])
                         if caputre_move and type(self.pieces[index]) == Pawn:
                             if [self.x2,self.y2] in self.pieces[index].capture():
-                                print(self.pieces[index].valid_moves)
                                 print("capture move")
                                 capture_var = self.chess_board[self.x2][self.y2]
                                 self.pieces[index].move(self.x2,self.y2)
@@ -514,7 +459,6 @@ class Chess():
                                 self.toogle_turn()
 
                         elif [self.x2,self.y2] in self.pieces[index].check_moves():
-                            print(self.pieces[index].valid_moves)
                             print("valid move")
                             capture_var = [False,self.chess_board[self.x2][self.y2]]
                             if self.chess_board[self.x2][self.y2] != "":
@@ -541,7 +485,6 @@ class Chess():
 
                         else:
                             print("invalid Move!")
-                            print(self.pieces[index].valid_moves)
 
                         if self.turn == "white":
                             self.checks.extend(self.pieces[0].if_under_check())
@@ -562,14 +505,11 @@ class Chess():
                 attaking_pos = []
                 for i in self.checks_by:
                     attaking_pos.append(i[1])
-                print("attaking", attaking_pos)
 
                 for piece in self.pieces:   
                     if [piece.x,piece.y] == [self.x1,self.y1] and ([self.x2,self.y2] in self.blocking_moves or [self.x2,self.y2] in attaking_pos):
-                        print([self.x2,self.y2])
                         if caputre_move and self.chess_board[self.x2][self.y2] != "" and type(piece) == Pawn:
                             if [self.x2,self.y2] in piece.capture():
-                                print(piece.valid_moves)
                                 print("capture move")
                                 capture_var = self.chess_board[self.x2][self.y2]
                                 piece.move(self.x2,self.y2)
@@ -594,7 +534,6 @@ class Chess():
                                 break
                                 #self.loopbraker = True
                         if [self.x2,self.y2] in piece.check_moves():
-                            print(piece.valid_moves)
                             print("valid move")
                             capture_var = [False,self.chess_board[self.x2][self.y2]]
                             if self.chess_board[self.x2][self.y2] != "":
@@ -610,7 +549,6 @@ class Chess():
                             if capture_var[0]:
                                 for j in range(len(self.pieces)+1):
                                     if [self.pieces[j].x,self.pieces[j].y] == [self.x2,self.y2] and self.pieces[j].type == capture_var[1][0] and self.pieces[j].color != self.turn:
-                                        print("done")
                                         self.pieces.pop(j)
                                         break
                             if ((piece.color=="white" and self.x2 == 7)or(piece.color=="black" and self.x2 == 0)) and piece.type == 'p':
@@ -628,7 +566,6 @@ class Chess():
                     #print([self.x2,self.y2] in self.safe_tiles)
                     
                     if [piece.x,piece.y] == [self.x1,self.y1] and piece.type == "k" and [self.x2,self.y2] in self.safe_tiles:
-                        print("this should be")
                         capture_var = [False,self.chess_board[self.x2][self.y2]]
                         if self.chess_board[self.x2][self.y2] != "":
                                 capture_var = [True,self.chess_board[self.x2][self.y2]]
@@ -665,7 +602,6 @@ class Chess():
                 break
 
                   
-
 #----------------------------------------PIECES----------------------------------------#
 class Piece():
     def __init__(self,x:int,y:int,color:str,type_:str):
@@ -690,6 +626,7 @@ class Piece():
         self.first_move = False
     def update_chess_board(self,chess_board):
         self.chess_board = chess_board
+
 
 class King(Piece):
 
@@ -793,6 +730,7 @@ class King(Piece):
             return_list.append("check by queen")
         return return_list
 
+
 class Queen(Piece):
 
     def check_moves(self):
@@ -811,6 +749,7 @@ class Queen(Piece):
                 self.directions.pop(num)
 
         return self.valid_moves
+
 
 class Rookh(Piece):
 
@@ -847,19 +786,13 @@ class Rookh(Piece):
 
         #right moves
         for i in range(1,8):
-            loopbraker = False
-            if loopbraker:
-                break
             try:
                 if self.y + i in list(range(8)) and self.chess_board[self.x][self.y+i] == '':
                     self.valid_moves.append([self.x,self.y+i])
                     self.directions.append("right")
-                    print("Rookh here", [self.x,self.y+i])
                 elif self.y + i in list(range(8)) and self.color == "white" and self.chess_board[self.x][self.y+i] in ["r'","n'","b'","q'","k'","p'"] or self.color == "black" and self.chess_board[self.x][self.y+i] in ["r","n","b","q","k","p"]:
                     self.valid_moves.append([self.x,self.y+i])
                     self.directions.append("right")
-                    print("Rookh here", [self.x,self.y+i])
-                    loopbraker = True
                     break
                 
                 else:
@@ -888,6 +821,7 @@ class Rookh(Piece):
                 self.valid_moves.remove(move)
                 self.directions.pop(num)
         return self.valid_moves
+
 
 class Knight(Piece):
 
@@ -1028,9 +962,6 @@ class Pawn(Piece):
                 self.valid_moves.append([a,b])
         return self.valid_moves
     
-    
-            
-
 
 chess = Chess()
 chess.start_game()
