@@ -250,7 +250,7 @@ def accuracy(prediction,y_test):
     score = score/total
     return float(score)
 
-df = pd.read_csv("loan_default_risk_dataset.csv")
+df = pd.read_csv("file.csv")
 df = df.dropna()
 X = df.drop("Loan_Default_Risk",axis=1)
 y = df["Loan_Default_Risk"]
